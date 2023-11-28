@@ -57,7 +57,7 @@ scenario:
 ci:
   datacenters: {"IE5 0": "ireland"}
   profile_shape: "baseload" #"baseload", "datacenter", "industry"
-  #load: 100. # nominal load in MW -> now scaled to match participation share
+  load: 100. # nominal load in MW
   res_techs: ["onwind","solar"]
   excess_share: 0.2
   flexibility: 0. # possible deviation of requested load from nominal level [percentage of nominal load]

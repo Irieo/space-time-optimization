@@ -210,8 +210,7 @@ def load_profile(
         )
         sys.exit()
 
-    # CI consumer nominal load in MW
-    load = config["ci_load"][zone] * float(participation) / 100
+    load = config["ci"]["load"]  # consumer nominal load in MW
 
     load_day = load * 24  # 24h
     load_profile_day = pd.Series(shape) * load_day
