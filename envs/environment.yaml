@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: 2023 Iegor Riepin, Tom Brown
+#
+# SPDX-License-Identifier: MIT
+
+name: '247-env'
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+  - gurobi
+dependencies:
+  - python
+  - matplotlib
+  - numpy
+  - pandas
+  - pypsa
+  - yaml
+  - ca-certificates
+  - certifi
+  - openssl
+  - pypdf2=1.28.4
+  - pip
+  - linopy
+  - geopandas
+  - seaborn
+  - oyaml
+  - snakemake
+  - ipykernel
+  - gurobi
+  - pip:
+    - vresutils
+
