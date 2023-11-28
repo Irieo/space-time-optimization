@@ -448,7 +448,7 @@ if __name__ == "__main__":
     datacenters = snakemake.config["ci"]["datacenters"]
     locations = list(datacenters.keys())
     names = list(datacenters.values())
-    flexibilities = snakemake.config["ci"]["flexibility"]
+    flexibilities = snakemake.config["scenario"]["flexibility"]
 
     # techs for CFE hourly matching, extracted from palette
     palette_techs = palette(tech_palette)
@@ -509,9 +509,9 @@ if __name__ == "__main__":
     rename_scen = {
         "0": "0%",
         "10": "10%",
-        "15": "15%",
         "20": "20%",
-        "25": "25%",
+        "30": "30%",
+        "40": "40%",
     }
 
     preferred_order = pd.Index(

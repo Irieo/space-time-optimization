@@ -650,11 +650,11 @@ if __name__ == "__main__":
 
         snakemake = mock_snakemake(
             "summarise_network",
-            year="2030",
-            zone="IE",
-            palette="p3",
+            year="2025",
+            zone="IEDK",
+            palette="p1",
             policy="cfe100",
-            participation="10",
+            flexibility="40",
         )
 
     # Wildcards & Settings
@@ -663,12 +663,11 @@ if __name__ == "__main__":
     tech_palette = snakemake.wildcards.palette
     zone = snakemake.wildcards.zone
     year = snakemake.wildcards.year
-    participation = snakemake.wildcards.participation
 
     datacenters = snakemake.config["ci"]["datacenters"]
     locations = list(datacenters.keys())
     names = list(datacenters.values())
-    flexibility = snakemake.config["ci"]["flexibility"]
+    flexibility = snakemake.wildcards.flexibility
 
     print(f"Summary for policy {policy} and penetration {penetration}")
     print(f"Summary for palette: {tech_palette}")

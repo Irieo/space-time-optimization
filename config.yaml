@@ -20,49 +20,42 @@ n_2030_3H: "input/elec_s_37_lv1.0__3H-B-solar+p3_2030.nc"
 
 # Retrieve technology data <version> for <year>
 # Source https://github.com/PyPSA/technology-data
-retrieve_cost_data: False
+retrieve_cost_data: True
 technology_data:
-  year: 2030
+  year: 2025
   version: v0.6.2
 
 ###################
 # Scenario controls
 
-run: test-2030-new
+run: test-IEDK
 
 #wildcards
 scenario:
+  flexibility: ['0', '40',] # possible deviation of requested load from nominal level [percentage of nominal load]
   policy:  ["cfe100"] # "ref", "res100", "cfe..", "cfe100"
   palette: [
-            # "p1", # onwind + solar + battery
+             "p1", # onwind + solar + battery
             # "p2", # onwind + solar + battery + LDES
-            "p3", # onwind + solar + battery + Allam cycle turbine with CCS
+            # "p3", # onwind + solar + battery + Allam cycle turbine with CCS
             ]
   zone: [
-        "IE" #37-node network of ENTSO-E area | possible toy zones: "IE", "DE", "IEDK", "DKDE"
+        "IEDK" #37-node network of ENTSO-E area | possible toy zones: "IE", "DE", "IEDK", "DKDE"
         ]
-  participation: [
-                '0',
-                '10',
-                '15',
-                '20',
-                '25',
-                ] # participation share of CI load per bidding zone that commit to voluntary CFE procurement [percentage]
   year: [
-          # "2025",
-          "2030"
+          "2025",
+          #"2030"
          ] # controls both the brownfield fleet and tech costs projection
 
 # CI consumer settings
 ci:
-  datacenters: {"IE5 0": "ireland"}
+  datacenters: {"IE5 0": "Ireland","DK1 0": "Denmark"}
   profile_shape: "baseload" #"baseload", "datacenter", "industry"
   load: 100. # nominal load in MW
   res_techs: ["onwind","solar"]
   excess_share: 0.2
-  flexibility: 0. # possible deviation of requested load from nominal level [percentage of nominal load]
-  spatial_shifting: False #turns on/off spatial flexibiilty  (aka virtual links)
-  temporal_shifting: False #turns on/off temporal flexibiilty (aka DSM)
+  spatial_shifting: True #turns on/off spatial flexibiilty  (aka virtual links)
+  temporal_shifting: True #turns on/off temporal flexibiilty (aka DSM)
 
 
 ###################

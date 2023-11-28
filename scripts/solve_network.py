@@ -1398,11 +1398,11 @@ if __name__ == "__main__":
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
         snakemake = mock_snakemake(
             "solve_network",
-            year="2030",
+            year="2025",
             zone="IE",
-            palette="p3",
+            palette="p1",
             policy="cfe100",
-            participation="10",
+            flexibility="40",
         )
 
     logging.basicConfig(
@@ -1418,12 +1418,11 @@ if __name__ == "__main__":
     zone = snakemake.wildcards.zone
     year = snakemake.wildcards.year
     profile_shape = config["ci"]["profile_shape"]
-    participation = snakemake.wildcards.participation
+    flexibility = snakemake.wildcards.flexibility
 
     datacenters = config["ci"]["datacenters"]
     locations = list(datacenters.keys())
     names = list(datacenters.values())
-    flexibility = config["ci"]["flexibility"]
 
     print(f"solving network for policy {policy} and penetration {penetration}")
     print(f"solving network for palette: {tech_palette}")
@@ -1467,7 +1466,7 @@ if __name__ == "__main__":
         co2_policy(n, year, config)
 
         add_ci(n, year)
-        add_vl(n) if config["ci"]["spatial_shifting"] else None
+        add_vl(n, names) if config["ci"]["spatial_shifting"] else None
         revert_links(n) if config["ci"]["spatial_shifting"] else None
         add_dsm(n) if config["ci"]["temporal_shifting"] else None
 
