@@ -84,35 +84,14 @@ def geoscope(zone: str):
     """
     # A few toy regional networks for test & play purposes
     IRELAND = ["IE5 0", "GB0 0", "GB5 0"]
-    GERMANY = [
-        "DE1 0",
-        "BE1 0",
-        "NO2 0",
-        "DK1 0",
-        "DK2 0",
-        "SE2 0",
-        "GB0 0",
-        "FR1 0",
-        "LU1 0",
-        "NL1 0",
-        "PL1 0",
-        "AT1 0",
-        "CH1 0",
-        "CZ1 0",
-    ]
     DKDE = ["DE1 0", "DK1 0", "DK2 0", "PL1 0"]
-    IEDK = (
-        IRELAND
-        + ["DK1 0", "DK2 0"]
-        + ["FR1 0", "LU1 0", "DE1 0", "BE1 0", "NL1 0", "NO2 0", "SE2 0"]
-    )
+    IEDK = IRELAND + ["DK1 0", "DK2 0"] + ["DE1 0", "NO2 0", "SE2 0"]
 
     # Full geographical scope
     EU = n.buses[n.buses["carrier"] == "AC"].index.tolist()
 
     basenodes_to_keep = {
         "IE": IRELAND,
-        "DE": GERMANY,
         "IEDK": IEDK,
         "DKDE": DKDE,
         "EU": EU,
@@ -833,7 +812,7 @@ def add_dsm(n) -> None:
             carrier="dsm",
             efficiency=1,
             p_nom=1e6,
-            marginal_cost=0.1,
+            marginal_cost=0.01,
             p_nom_extendable=False,
         )
 
@@ -845,7 +824,7 @@ def add_dsm(n) -> None:
             carrier="dsm",
             efficiency=1,
             p_nom=1e6,
-            marginal_cost=0.1,
+            marginal_cost=0.01,
             p_nom_extendable=False,
         )
 
@@ -1399,7 +1378,7 @@ if __name__ == "__main__":
         snakemake = mock_snakemake(
             "solve_network",
             year="2025",
-            zone="IE",
+            zone="IEDK",
             palette="p1",
             policy="cfe100",
             flexibility="40",
@@ -1467,8 +1446,8 @@ if __name__ == "__main__":
 
         add_ci(n, year)
         add_vl(n, names) if config["ci"]["spatial_shifting"] else None
-        revert_links(n) if config["ci"]["spatial_shifting"] else None
         add_dsm(n) if config["ci"]["temporal_shifting"] else None
+        revert_links(n)
 
         solve_network(
             n=n,
