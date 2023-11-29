@@ -26,108 +26,35 @@ def format_column_names(col_tuple):
     return f"{col_tuple[0]}{col_tuple[1][:2]}"
 
 
-def ci_capacity():
-    fig, ax = plt.subplots()
-    fig.set_size_inches((8, 6))
+def ci_capacity(
+    df, tech_colors, rename_scen, rename_ci_capacity, preferred_order, datacenters
+):
+    fig, ax = plt.subplots(figsize=(8, 6))
 
-    gen_inv = df.loc[["ci_cap_" + t for t in clean_techs]].rename(
-        {"ci_cap_" + t: t for t in clean_techs}
-    )
-    discharge_inv = df.loc[["ci_cap_" + t for t in clean_dischargers]].rename(
-        {"ci_cap_" + t: t for t in clean_dischargers}
-    )
-    charge_inv = df.loc[["ci_cap_" + t for t in clean_chargers]].rename(
-        {"ci_cap_" + t: t for t in clean_chargers}
-    )
-    charge_inv = charge_inv.drop(
-        ["battery_charger"]
-    )  # display only battery discharger capacity
+    # Consolidate DataFrame operations
+    inventory_frames = [
+        df.loc[["ci_cap_" + t.replace(" ", "_") for t in techs]].rename(
+            {"ci_cap_" + t: t for t in techs}
+        )
+        for techs in [clean_techs, clean_dischargers, clean_chargers]
+    ]
+    ldf = pd.concat(inventory_frames)
+    ldf = ldf.drop(["battery_charger"])  # Exclude battery charger capacity
 
-    ldf = pd.concat([gen_inv, charge_inv, discharge_inv])
+    # Drop rows with all values less than 0.1
+    ldf = ldf.drop(ldf.index[(ldf < 0.1).all(axis=1)])
 
-    to_drop = ldf.index[(ldf < 0.1).all(axis=1)]
-    ldf.drop(to_drop, inplace=True)
-
+    # Rename columns and indices, and reorder DataFrame
     ldf.rename(columns=rename_scen, level=0, inplace=True)
     ldf.rename(index=rename_ci_capacity, level=0, inplace=True)
     new_index = preferred_order.intersection(ldf.index).append(
         ldf.index.difference(preferred_order)
     )
-    ldf = ldf.loc[new_index]
-
-    # Sort final dataframe before plotting
-    ldf.sort_index(axis="columns", level=[1, 0], ascending=[False, True], inplace=True)
-
-    if not ldf.empty:
-        (ldf).T.plot(
-            kind="bar",
-            stacked=True,
-            ax=ax,
-            color=tech_colors,
-            width=0.65,
-            edgecolor="black",
-            linewidth=0.05,
-        )
-    else:
-        print(f"Dataframe to plot is empty")
-
-    plt.xticks(rotation=0)
-    ax.set_xticklabels(["".join(item) for item in ldf.columns.tolist()])
-    ax.grid(alpha=0.3)
-    ax.set_axisbelow(True)
-    ax.set_ylim([0, max(ldf.sum()) * 1.3])
-    ax.yaxis.set_major_formatter(FormatStrFormatter("%.0f"))
-    # ax.set_xlabel("CFE target")
-    ax.set_ylabel("DC portfolio capacity [MW]")
-    ax.legend(loc="upper left", ncol=2, prop={"size": 9})
-
-    space = len(ldf.columns) / len(datacenters)
-    for l in range(len(datacenters) - 1):
-        plt.axvline(x=(space - 0.5) + space * l, color="gray", linestyle="--")
-
-    formatted_columns = [format_column_names(col) for col in ldf.columns.tolist()]
-    ax.set_xticklabels(formatted_columns)
-
-    fig.tight_layout()
-    fig.savefig(snakemake.output.plot, transparent=True)
-
-
-def ci_costandrev():
-    fig, ax = plt.subplots()
-    fig.set_size_inches((8, 6))
-
-    techs = clean_techs + [
-        "grid",
-        "battery_storage",
-        "battery_inverter",
-        "hydrogen_storage",
-        "hydrogen_electrolysis",
-        "hydrogen_fuel_cell",
-    ]
-
-    costs = (
-        df.loc[["ci_cost_" + t for t in techs]]
-        .rename({"ci_cost_" + t: t for t in techs})
-        .multiply(1 / df.loc["ci_demand_total"], axis=1)
+    ldf = ldf.loc[new_index].sort_index(
+        axis="columns", level=[1, 0], ascending=[False, True]
     )
 
-    to_drop = costs.index[(costs < 0.1).all(axis=1)]
-    costs.drop(to_drop, inplace=True)
-
-    revenues = -df.loc[["ci_average_revenue"]]
-    revenues.index = revenues.index.map({"ci_average_revenue": "revenue"})
-    ldf = pd.concat([costs, revenues])
-
-    ldf.rename(columns=rename_scen, level=0, inplace=True)
-    ldf = ldf.groupby(rename_ci_cost).sum()
-    new_index = preferred_order.intersection(ldf.index).append(
-        ldf.index.difference(preferred_order)
-    )
-    ldf = ldf.loc[new_index]
-
-    # Sort final dataframe before plotting
-    ldf.sort_index(axis="columns", level=[1, 0], ascending=[False, True], inplace=True)
-
+    # Plotting
     if not ldf.empty:
         ldf.T.plot(
             kind="bar",
@@ -138,77 +65,68 @@ def ci_costandrev():
             edgecolor="black",
             linewidth=0.05,
         )
+        ax.set_xticklabels(
+            [format_column_names(col) for col in ldf.columns.tolist()], fontsize=12
+        )
+        plt.xticks(rotation=0)
+        ax.grid(alpha=0.3)
+        ax.set_axisbelow(True)
+        ax.set_ylim([0, max(ldf.sum()) * 1.3])
+        ax.yaxis.set_major_formatter(FormatStrFormatter("%.0f"))
+        ax.set_ylabel("DC portfolio capacity [MW]", fontsize=14)
+        ax.legend(loc="upper left", ncol=2, prop={"size": 9})
+
+        # Add datacenter lines
+        space = len(ldf.columns) / len(datacenters)
+        for l in range(len(datacenters) - 1):
+            ax.axvline(x=(space - 0.5) + space * l, color="gray", linestyle="--")
     else:
-        print(f"Dataframe to plot is empty")
-
-    netc = ldf.sum()
-    x = 0
-    for i in range(len(netc)):
-        ax.scatter(x=x, y=netc[i], color="black", marker="_")
-        x += 1
-    ax.scatter([], [], color="black", marker="_", label="net cost")
-    # dots = ax.scatter(0, 0, color='black', marker="_")
-    # ax.legend(handlers = [dots])
-
-    plt.xticks(rotation=0)
-    ax.set_xticklabels(["".join(item) for item in ldf.columns.tolist()])
-    ax.grid(alpha=0.3)
-    ax.set_axisbelow(True)
-    ax.set_ylabel("24/7 CFE cost and revenue [€/MWh]")
-    ax.legend(loc="upper left", ncol=3, prop={"size": 9})
-    ax.set_ylim(top=max(ldf.sum()) * 1.5)
-
-    space = len(ldf.columns) / len(datacenters)
-    for l in range(len(datacenters) - 1):
-        plt.axvline(x=(space - 0.5) + space * l, color="gray", linestyle="--")
-
-    formatted_columns = [format_column_names(col) for col in ldf.columns.tolist()]
-    ax.set_xticklabels(formatted_columns)
+        print("Dataframe to plot is empty")
 
     fig.tight_layout()
-    fig.savefig(
-        snakemake.output.plot.replace("capacity.pdf", "ci_costandrev.pdf"),
-        transparent=True,
+    fig.savefig(snakemake.output.plot, transparent=True)
+
+
+def ci_costandrev(
+    df, tech_colors, rename_scen, rename_ci_cost, preferred_order, datacenters
+):
+    fig, ax = plt.subplots(figsize=(8, 6))
+
+    # Define technologies list
+    techs = clean_techs + [
+        "grid",
+        "battery_storage",
+        "battery_inverter",
+        "hydrogen_storage",
+        "hydrogen_electrolysis",
+        "hydrogen_fuel_cell",
+    ]
+
+    # Calculate costs and handle DataFrame operations
+    costs = (
+        df.loc[["ci_cost_" + t.replace(" ", "_") for t in techs]]
+        .rename({"ci_cost_" + t: t for t in techs})
+        .multiply(1 / df.loc["ci_demand_total"], axis=1)
     )
+    costs = costs.drop(costs.index[(costs < 0.1).all(axis=1)])
 
+    # Handling revenues
+    revenues = -df.loc[["ci_average_revenue"]].rename({"ci_average_revenue": "revenue"})
+    ldf = pd.concat([costs, revenues])
 
-def ci_generation():
-    fig, ax = plt.subplots()
-    fig.set_size_inches((8, 6))
-
-    generation = (
-        df.loc[["ci_generation_" + t for t in clean_techs]].rename(
-            {"ci_generation_" + t: t for t in clean_techs}
-        )
-        / 1000.0
-    )
-    discharge = (
-        df.loc[["ci_generation_" + t for t in clean_dischargers]].rename(
-            {"ci_generation_" + t: t for t in clean_dischargers}
-        )
-        / 1000.0
-    )
-
-    ldf = pd.concat([generation, discharge])
-
-    to_drop = ldf.index[(ldf < 0.1).all(axis=1)]
-    ldf.drop(to_drop, inplace=True)
-
+    # Rename and Group by rename_ci_cost, then sort
     ldf.rename(columns=rename_scen, level=0, inplace=True)
-    ldf.rename(index=rename_ci_capacity, level=0, inplace=True)
+    ldf = ldf.groupby(rename_ci_cost).sum()
     new_index = preferred_order.intersection(ldf.index).append(
         ldf.index.difference(preferred_order)
     )
-    ldf = ldf.loc[new_index]
+    ldf = ldf.loc[new_index].sort_index(
+        axis="columns", level=[1, 0], ascending=[False, True]
+    )
 
-    yl = df.loc["ci_demand_total"][0] / 1000
-    plt.axhline(y=yl, color="gray", linestyle="--", linewidth=0.8)
-
-    # Sort final dataframe before plotting
-    ldf.sort_index(axis="columns", level=[1, 0], ascending=[False, True], inplace=True)
-
+    # Plotting
     if not ldf.empty:
-        (ldf).T.plot(
+        ldf.T.plot(
             kind="bar",
             stacked=True,
             ax=ax,
@@ -217,20 +135,94 @@ def ci_generation():
             edgecolor="black",
             linewidth=0.05,
         )
+        ax.set_xticklabels(
+            [format_column_names(col) for col in ldf.columns.tolist()], fontsize=12
+        )
+        plt.xticks(rotation=0)
+        ax.grid(alpha=0.3)
+        ax.set_axisbelow(True)
+        ax.set_ylabel("24/7 CFE cost and revenue [€/MWh]", fontsize=14)
+        ax.legend(loc="upper left", ncol=3, prop={"size": 9})
+        ax.set_ylim(top=max(ldf.sum()) * 1.5)
+
+        # Add net cost markers
+        net_costs = ldf.sum()
+        for i, cost in enumerate(net_costs):
+            ax.scatter(x=i, y=cost, color="black", marker="_")
+        ax.scatter([], [], color="black", marker="_", label="net cost")
+        ax.legend(loc="upper left", ncol=3, prop={"size": 9})
+
+        # Add datacenter lines
+        space = len(ldf.columns) / len(datacenters)
+        for l in range(len(datacenters) - 1):
+            ax.axvline(x=(space - 0.5) + space * l, color="gray", linestyle="--")
     else:
-        print(f"Dataframe to plot is empty")
+        print("Dataframe to plot is empty")
 
-    plt.xticks(rotation=0)
-    ax.set_xticklabels(["".join(item) for item in ldf.columns.tolist()])
-    ax.grid(alpha=0.3)
-    ax.set_axisbelow(True)
-    ax.set_ylim([0, max(ldf.sum()) * 1.3])
-    # ax.set_xlabel("CFE target")
-    ax.set_ylabel("DC portfolio generation [GWh]")
-    ax.legend(loc="upper left", ncol=2, prop={"size": 9})
+    fig.tight_layout()
+    fig.savefig(
+        snakemake.output.plot.replace("capacity.pdf", "ci_costandrev.pdf"),
+        transparent=True,
+    )
 
-    formatted_columns = [format_column_names(col) for col in ldf.columns.tolist()]
-    ax.set_xticklabels(formatted_columns)
+
+def ci_generation(df, tech_colors, rename_scen, rename_ci_capacity, preferred_order):
+    fig, ax = plt.subplots(figsize=(8, 6))
+
+    # Handling generation and discharge data
+    generation = (
+        df.loc[["ci_generation_" + t.replace(" ", "_") for t in clean_techs]].rename(
+            {"ci_generation_" + t: t for t in clean_techs}
+        )
+        / 1000.0
+    )
+    discharge = (
+        df.loc[
+            ["ci_generation_" + t.replace(" ", "_") for t in clean_dischargers]
+        ].rename({"ci_generation_" + t: t for t in clean_dischargers})
+        / 1000.0
+    )
+
+    # Concatenate and drop unnecessary rows
+    ldf = pd.concat([generation, discharge])
+    ldf = ldf.drop(ldf.index[(ldf < 0.1).all(axis=1)])
+
+    # Rename and reorder
+    ldf.rename(columns=rename_scen, level=0, inplace=True)
+    ldf.rename(index=rename_ci_capacity, level=0, inplace=True)
+    new_index = preferred_order.intersection(ldf.index).append(
+        ldf.index.difference(preferred_order)
+    )
+    ldf = ldf.loc[new_index].sort_index(
+        axis="columns", level=[1, 0], ascending=[False, True]
+    )
+
+    # Plotting
+    if not ldf.empty:
+        ldf.T.plot(
+            kind="bar",
+            stacked=True,
+            ax=ax,
+            color=tech_colors,
+            width=0.65,
+            edgecolor="black",
+            linewidth=0.05,
+        )
+        ax.set_xticklabels(
+            [format_column_names(col) for col in ldf.columns.tolist()], fontsize=12
+        )
+        plt.xticks(rotation=0)
+        ax.grid(alpha=0.3)
+        ax.set_axisbelow(True)
+        ax.set_ylabel("DC portfolio generation [GWh]", fontsize=14)
+        ax.legend(loc="upper left", ncol=2, prop={"size": 9})
+        ax.set_ylim(top=max(ldf.sum()) * 1.3)
+
+        # Add horizontal line for total demand
+        total_demand = df.loc["ci_demand_total"][0] / 1000
+        ax.axhline(y=total_demand, color="gray", linestyle="--", linewidth=0.8)
+    else:
+        print("Dataframe to plot is empty")
 
     fig.tight_layout()
     fig.savefig(
@@ -239,34 +231,35 @@ def ci_generation():
     )
 
 
-def zone_emissions():
-    fig, ax = plt.subplots()
-    fig.set_size_inches((8, 6))
+def zone_emissions(df, rename_scen):
+    fig, ax = plt.subplots(figsize=(8, 6))
 
-    ldf = df.loc["emissions_zone"]  # .to_frame()
-
+    # Handling DataFrame
+    ldf = df.loc["emissions_zone"]
     ldf.index = ldf.index.set_levels(ldf.index.levels[0].map(rename_scen), level=0)
 
-    # Sort final dataframe before plotting
+    # Sorting DataFrame
     ldf.sort_index(axis="rows", level=[1, 0], ascending=[False, True], inplace=True)
 
-    ldf.plot(
-        kind="bar",
-        ax=ax,
-        color="#33415c",
-        width=0.65,
-        edgecolor="black",
-        linewidth=0.05,
-    )
-
-    plt.xticks(rotation=0)
-    ax.grid(alpha=0.3)
-    ax.set_axisbelow(True)
-    # ax.set_xlabel("CFE target")
-    ax.set_ylabel("Emissions in local zone [MtCO$_2$/a]")
-
-    formatted_columns = [format_column_names(col) for col in ldf.index.tolist()]
-    ax.set_xticklabels(formatted_columns)
+    # Plotting
+    if not ldf.empty:
+        ldf.plot(
+            kind="bar",
+            ax=ax,
+            color="#33415c",
+            width=0.65,
+            edgecolor="black",
+            linewidth=0.05,
+        )
+        ax.set_xticklabels(
+            [format_column_names(col) for col in ldf.index.tolist()], fontsize=12
+        )
+        plt.xticks(rotation=0)
+        ax.grid(alpha=0.3)
+        ax.set_axisbelow(True)
+        ax.set_ylabel("Emissions in local zone [MtCO$_2$/a]", fontsize=14)
+    else:
+        print("Dataframe to plot is empty")
 
     fig.tight_layout()
     fig.savefig(
@@ -275,24 +268,21 @@ def zone_emissions():
     )
 
 
-def ci_curtailment():
-    fig, ax = plt.subplots()
-    fig.set_size_inches((6, 4.5))
+def ci_curtailment(df, rename_scen, ci_res_techs):
+    fig, ax = plt.subplots(figsize=(8, 6))
 
     # Data for ci res curtailment across all locations
-    ci_res = snakemake.config["ci"]["res_techs"]
-    ldf = df.loc[["ci_curtailment_" + t for t in ci_res]].rename(
-        {"ci_curtailment_" + t: t for t in ci_res}
+    ldf = df.loc[["ci_curtailment_" + t for t in ci_res_techs]].rename(
+        {"ci_curtailment_" + t: t for t in ci_res_techs}
     )
 
     # Refine data
     ldf.rename(columns=rename_scen, level=0, inplace=True)
     ldf = pd.DataFrame(ldf.sum(axis=0), columns=["RES curtailment"]).unstack()
     ldf = ldf["RES curtailment"] / 1e3
+    ldf.columns = [format_column_names(col) for col in ldf.columns.tolist()]
 
-    formatted_columns = [format_column_names(col) for col in ldf.columns.tolist()]
-    ldf.columns = formatted_columns
-
+    # Plotting
     if not ldf.empty:
         ldf.plot(
             kind="bar",
@@ -303,17 +293,15 @@ def ci_curtailment():
             linewidth=0.05,
             color=sns.color_palette("rocket", len(ldf.columns)),
         )
+        plt.xticks(rotation=0)
+        ax.grid(alpha=0.3)
+        ax.set_axisbelow(True)
+        ax.set_ylabel("DC portfolio RES curtailment [GWh]", fontsize=12)
+        ax.legend(loc="upper right", ncol=2, prop={"size": 9}, fancybox=True)
+        ax.set_ylim(top=ldf.sum(axis=1).max() * 1.5)
     else:
-        print(f"Dataframe to plot is empty")
+        print("Dataframe to plot is empty")
 
-    plt.xticks(rotation=0)
-    ax.grid(alpha=0.3)
-    ax.set_axisbelow(True)
-    ax.set_ylabel("DC portfolio RES curtailment [GWh]")
-    up = ldf.sum(axis=1).max()
-    ax.set_ylim(top=up * 1.5)
-
-    ax.legend(loc="upper right", ncol=2, prop={"size": 9}, fancybox=True)
     fig.tight_layout()
     fig.savefig(
         snakemake.output.plot.replace("capacity.pdf", "ci_curtailment.pdf"),
@@ -321,21 +309,22 @@ def ci_curtailment():
     )
 
 
-def ci_abs_costs():
-    fig, ax = plt.subplots()
-    fig.set_size_inches((6, 4.5))
+def ci_abs_costs(df, rename_scen):
+    fig, ax = plt.subplots(figsize=(6, 4.5))
 
+    # Calculate absolute costs
     ldf = (df.loc["ci_total_cost"] - df.loc["ci_revenue_grid"]) / 1e6
     ldf = ldf.to_frame(name="ci_abs_costs")
 
+    # Refine data
     ldf.index = ldf.index.set_levels(ldf.index.levels[0].map(rename_scen), level=0)
     ldf = ldf["ci_abs_costs"].unstack()
-    # Sort final dataframe before plotting
     ldf.sort_index(axis="rows", ascending=True, inplace=True)
 
-    formatted_columns = [format_column_names(col) for col in ldf.columns.tolist()]
-    ldf.columns = formatted_columns
+    # Update columns for plotting
+    ldf.columns = [format_column_names(col) for col in ldf.columns.tolist()]
 
+    # Plotting
     if not ldf.empty:
         ldf.plot(
             kind="bar",
@@ -346,47 +335,40 @@ def ci_abs_costs():
             linewidth=0.05,
             color=sns.color_palette("rocket", len(ldf.columns)),
         )
-    else:
-        print(f"Dataframe to plot is empty")
+        plt.xticks(rotation=0)
+        ax.grid(alpha=0.3)
+        ax.set_axisbelow(True)
 
-    plt.xticks(rotation=0)
-    ax.grid(alpha=0.3)
-    ax.set_axisbelow(True)
-    value = ldf.sum(axis=1)[0] - ldf.sum(axis=1)[-1]
-    pp = int(round(value / ldf.sum(axis=1)[0] * 100, 0))
-    ax.set_xlabel(
-        f"Share of flexible workloads.\n Costs reduction in max flexibility scenario: {pp}% ({round(value, 1)} MEUR/a)"
-    )
-
-    # Draw horizontal lines at the top of each bar
-    for i, val in enumerate(ldf.sum(axis=1)):
-        ax.hlines(
-            val,
-            ax.get_xlim()[0],
-            ax.get_xlim()[1],
-            color="gray",
-            linestyle="--",
-            linewidth=1.5,
-            alpha=0.8,
+        # Additional calculations and horizontal lines
+        value = ldf.sum(axis=1)[0] - ldf.sum(axis=1)[-1]
+        percent_reduction = int(round(value / ldf.sum(axis=1)[0] * 100, 0))
+        ax.set_xlabel(
+            f"Share of flexible workloads.\n Costs reduction in max flexibility scenario: {percent_reduction}% ({round(value, 1)} MEUR/a)"
         )
+        for y_val in ldf.sum(axis=1):
+            ax.hlines(
+                y_val,
+                ax.get_xlim()[0],
+                ax.get_xlim()[1],
+                color="gray",
+                linestyle="--",
+                linewidth=1.5,
+                alpha=0.8,
+            )
 
-    ax.set_ylabel("24/7 CFE total annual costs [MEUR per year]")
+        ax.set_ylabel("24/7 CFE total annual costs [MEUR per year]")
 
-    # Add second y-axis
-    ax2 = ax.twinx()
-    ax2.set_ylim(ax.get_ylim())  # Ensure the second y-axis shares the same limits
+        # Add second y-axis for relative costs
+        ax2 = ax.twinx()
+        ax2.set_ylim(ax.get_ylim())
+        max_y_val = ldf.sum(axis=1)[0]
+        ax2.set_yticks(np.linspace(0, max_y_val, 11))
+        ax2.set_ylabel(f"Relative costs [% of zero flexibility scenario]")
+        vals = ax2.get_yticks()
+        ax2.set_yticklabels(["{:,.0%}".format(x / max_y_val) for x in vals])
 
-    # Set the ticks of second y-axis to percentage
-    max_y_val = ldf.sum(axis=1)[0]  # get the max value of the first column
-    ax2.set_yticks(
-        np.linspace(0, max_y_val, 11)
-    )  # Set ticks from 0 to max_y_val with equal intervals
-    ax2.set_ylabel(f"Relative costs [% of zero flexibility scenario]")
-
-    vals = ax2.get_yticks()
-    ax2.set_yticklabels(
-        ["{:,.0%}".format(x / max_y_val) for x in vals]
-    )  # normalize the values based on max_y_val
+    else:
+        print("Dataframe to plot is empty")
 
     fig.tight_layout()
     fig.savefig(
@@ -395,38 +377,43 @@ def ci_abs_costs():
     )
 
 
-def objective_abs():
-    fig, ax = plt.subplots()
-    fig.set_size_inches((6, 4.5))
+def objective_abs(df, rename_scen, locations):
+    fig, ax = plt.subplots(figsize=(6, 4.5))
 
+    # Calculate and manipulate objective data
     ldf = df.loc["objective"] / 1e6
     ldf = ldf.to_frame(name="objective")
-
     ldf.index = ldf.index.set_levels(ldf.index.levels[0].map(rename_scen), level=0)
     ldf = ldf["objective"].unstack()
     ldf.sort_index(axis="rows", ascending=True, inplace=True)
 
+    # Adjusting the objective values
     ldf = ldf.sub(ldf.iloc[0, :])
-    # select any location since system-wide values are the same
     ldf = ldf[locations[0]]
 
-    ldf.plot(
-        kind="bar",
-        ax=ax,
-        color="#33415c",
-        width=0.65,
-        edgecolor="black",
-        linewidth=0.05,
-    )
+    # Plotting
+    if not ldf.empty:
+        ldf.plot(
+            kind="bar",
+            ax=ax,
+            color="#33415c",
+            width=0.65,
+            edgecolor="black",
+            linewidth=0.05,
+        )
+        plt.xticks(rotation=0)
+        ax.grid(alpha=0.3)
+        ax.set_axisbelow(True)
+        ax.set_ylabel("Objective [MEUR]", fontsize=12)
 
-    plt.xticks(rotation=0)
-    ax.grid(alpha=0.3)
-    ax.set_axisbelow(True)
-    ax.set_ylabel("Objective [MEUR]")
-
-    value = -(ldf[0] - ldf[-1])
-    plt.axhline(y=ldf.min(), color="gray", linestyle="--", linewidth=1.5)
-    ax.set_xlabel(f"Obj. diff for min/max flex scenarios: \n {round(value, 1)} MEUR/a")
+        # Additional axis formatting
+        value = -(ldf[0] - ldf[-1])
+        plt.axhline(y=ldf.min(), color="gray", linestyle="--", linewidth=1.5)
+        ax.set_xlabel(
+            f"Obj. diff for min/max flex scenarios: \n {round(value, 1)} MEUR/a"
+        )
+    else:
+        print("Dataframe to plot is empty")
 
     fig.tight_layout()
     fig.savefig(
@@ -748,7 +735,7 @@ if __name__ == "__main__":
         from _helpers import mock_snakemake
 
         snakemake = mock_snakemake(
-            "plot_summary", year="2025", zone="EU", palette="p2", policy="cfe100"
+            "plot_summary", year="2025", zone="IEDK", palette="p1", policy="cfe100"
         )
 
     config = snakemake.config
@@ -912,13 +899,46 @@ if __name__ == "__main__":
 
 df = pd.read_csv(snakemake.input.summary, index_col=0, header=[0, 1])
 
-ci_capacity()
-ci_costandrev()
-ci_generation()
-ci_abs_costs()
-ci_curtailment()
-objective_abs()
-zone_emissions()
+ci_capacity(
+    df=df,
+    tech_colors=tech_colors,
+    rename_scen=rename_scen,
+    rename_ci_capacity=rename_ci_capacity,
+    preferred_order=preferred_order,
+    datacenters=datacenters,
+)
+
+ci_costandrev(
+    df=df,
+    tech_colors=tech_colors,
+    rename_scen=rename_scen,
+    rename_ci_cost=rename_ci_cost,
+    preferred_order=preferred_order,
+    datacenters=datacenters,
+)
+
+ci_generation(
+    df=df,
+    tech_colors=tech_colors,
+    rename_scen=rename_scen,
+    rename_ci_capacity=rename_ci_capacity,
+    preferred_order=preferred_order,
+)
+
+zone_emissions(df=df, rename_scen=rename_scen)
+
+ci_curtailment(
+    df=df,
+    rename_scen=rename_scen,
+    ci_res_techs=snakemake.config["ci"]["res_techs"],
+)
+
+ci_abs_costs(
+    df=df,
+    rename_scen=rename_scen,
+)
+
+objective_abs(df=df, rename_scen=rename_scen, locations=locations)
 
 
 # TIME-SERIES DATA (per flexibility scenario)
