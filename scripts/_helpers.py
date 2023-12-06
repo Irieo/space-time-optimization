@@ -6,6 +6,44 @@ import pypsa, numpy as np, pandas as pd
 from pathlib import Path
 import yaml
 import difflib
+from math import radians, cos, sin, asin, sqrt
+
+
+def calculate_distance(n, bus1, bus2):
+    """
+    Calculate the great circle distance between two buses in a PyPSA network object using the Haversine formula.
+
+    Parameters:
+    n (DataFrame): PyPSA network object containing bus coordinates.
+    bus1 (str): The ID of the first bus.
+    bus2 (str): The ID of the second bus.
+
+    Returns:
+    float: The distance between the two buses in kilometers.
+    """
+
+    def haversine(lon1, lat1, lon2, lat2):
+        """
+        Calculate the great circle distance between two points on the earth (specified in decimal degrees)
+        """
+        # Convert decimal degrees to radians
+        lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
+
+        dlon = lon2 - lon1
+        dlat = lat2 - lat1
+        a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
+        c = 2 * asin(sqrt(a))
+        r = 6371  # Radius of earth in kilometers.
+        return c * r
+
+    # Extract the coordinates of the two buses
+    lon1, lat1 = n.buses.loc[bus1, ["x", "y"]]
+    lon2, lat2 = n.buses.loc[bus2, ["x", "y"]]
+
+    # Calculate the distance using the Haversine formula
+    distance_km = haversine(lon1, lat1, lon2, lat2)
+
+    return distance_km
 
 
 def load_yaml(file_path):
