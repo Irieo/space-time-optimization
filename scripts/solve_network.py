@@ -1093,6 +1093,24 @@ def solve_network(
                 rec - snd + delayout - delayin >= rhs_lo, name=f"DC-lower_{name}"
             )
 
+    def DC_netshift_constraints(n):
+        """
+        Constraint ensuring that net spatial shift of load zero for each DC.
+        Conditional constraint: only if config.yaml setting is set to True.
+        """
+
+        weights = n.snapshot_weightings["generators"]
+        vls = n.links[n.links.carrier == "virtual_link"]
+
+        for location, name in datacenters.items():
+            vls_snd = vls.query("bus0==@name").index
+            vls_rec = vls.query("bus1==@name").index
+
+            snd = n.model["Link-p"].loc[:, vls_snd].sum(dims=["Link"])
+            rec = n.model["Link-p"].loc[:, vls_rec].sum(dims=["Link"])
+
+            n.model.add_constraints(snd.sum() == rec.sum(), name=f"netshift_{name}")
+
     def cfe_constraints(n):
         weights = n.snapshot_weightings["generators"]
         delta = float(flexibility) / 100
@@ -1273,6 +1291,7 @@ def solve_network(
             # DSM_constraints(n) # redundant with DC_constraints(n)
             DC_constraints(n)
             DSM_conservation(n) if config["ci"]["temporal_shifting"] else None
+            DC_netshift_constraints(n) if config["ci"]["netshift_zero"] else None
         elif policy == "res":
             print("setting annual RES target of", penetration)
             res_constraints(n)

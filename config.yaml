@@ -56,7 +56,7 @@ ci:
   excess_share: 0.2
   spatial_shifting: True #turns on/off spatial flexibiilty  (aka virtual links)
   temporal_shifting: True #turns on/off temporal flexibiilty (aka DSM)
-
+  netshift_zero: True #turns on/off netshift zero constraint 
 
 ###################
 # Time-series management
