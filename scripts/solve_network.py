@@ -1183,51 +1183,6 @@ def solve_network(
                 lhs == penetration * total_load, name=f"100RES_annual_matching_{name}"
             )
 
-    def country_res_constraints(n):
-        weights = n.snapshot_weightings["generators"]
-
-        for location, name in datacenters.items():
-            zone = n.buses.loc[f"{location}", :].country
-
-            grid_res_techs = config["global"]["grid_res_techs"]
-            grid_buses = n.buses.index[
-                n.buses.location.isin(geoscope(zone)["country_nodes"][location])
-            ]
-            grid_loads = n.loads.index[n.loads.bus.isin(grid_buses)]
-
-            country_res_gens = n.generators.index[
-                n.generators.bus.isin(grid_buses)
-                & n.generators.carrier.isin(grid_res_techs)
-            ]
-            country_res_links = n.links.index[
-                n.links.bus1.isin(grid_buses) & n.links.carrier.isin(grid_res_techs)
-            ]
-            country_res_storage_units = n.storage_units.index[
-                n.storage_units.bus.isin(grid_buses)
-                & n.storage_units.carrier.isin(grid_res_techs)
-            ]
-
-            gens = n.model["Generator-p"].loc[:, country_res_gens] * weights
-            links = (
-                n.model["Link-p"].loc[:, country_res_links]
-                * n.links.loc[country_res_links, "efficiency"]
-                * weights
-            )
-            sus = (
-                n.model["StorageUnit-p_dispatch"].loc[:, country_res_storage_units]
-                * weights
-            )
-            lhs = gens.sum() + sus.sum() + links.sum()
-
-            target = config[f"res_target_{year}"][f"{zone}"]
-            total_load = (
-                n.loads_t.p_set[grid_loads].sum(axis=1) * weights
-            ).sum()  # number
-
-            n.model.add_constraints(
-                lhs == target * total_load, name=f"country_res_constraints_{zone}"
-            )
-
     def system_res_constraints(n, year, config) -> None:
         """
         Set a system-wide national RES constraints based on NECPs.
@@ -1306,7 +1261,6 @@ def solve_network(
 
     def extra_functionality(n, snapshots):
         add_battery_constraints(n)
-        # country_res_constraints(n)
         system_res_constraints(n, year, config)
 
         if policy == "ref":
