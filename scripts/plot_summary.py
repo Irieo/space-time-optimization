@@ -14,7 +14,6 @@ import matplotlib.colors as mc
 from matplotlib.cm import ScalarMappable
 import matplotlib.ticker as ticker
 
-# allow plotting without Xwindows
 matplotlib.use("Agg")
 
 from solve_network import palette
@@ -41,7 +40,7 @@ def ci_capacity(
     ldf = pd.concat(inventory_frames)
     ldf = ldf.drop(["battery_charger"])  # Exclude battery charger capacity
 
-    # Drop rows with all values less than 0.1
+    # Drop rows with all values less ran 0.1
     ldf = ldf.drop(ldf.index[(ldf < 0.1).all(axis=1)])
 
     # Rename columns and indices, and reorder DataFrame
@@ -728,6 +727,59 @@ def plot_balances(n, node, start="2013-03-01 00:00:00", stop="2013-03-08 00:00:0
     fig.savefig(path + "/" + f"{flex}_balance_{node}.pdf")
 
 
+def utilization_dc(names, flexibilities):
+    fig, axs = plt.subplots(
+        len(names), 1, figsize=(5, 1.3 * len(names)), sharex=True, sharey=True
+    )
+    fig.text(
+        -0.03, 0.5, "Change in Avg. Utilization [%]", va="center", rotation="vertical"
+    )
+
+    mean_data = []
+    for flex in flexibilities:
+        network_path = snakemake.input.networks.split("0.nc")[0] + f"/{flex}.nc"
+        n = pypsa.Network(network_path)
+        mean_flex = []
+
+        if snakemake.config["ci"]["spatial_shifting"]:
+            for node in names:
+                spatial_shift = retrieve_nb(n, node).get("spatial shift")
+                df = (
+                    spatial_shift
+                    if spatial_shift is not None
+                    else pd.Series(
+                        0, index=retrieve_nb(n, node).index, name="spatial shift"
+                    )
+                )
+                mean_flex.append(-df.mean())
+
+        mean_data.append(mean_flex)
+
+    mean_df = pd.DataFrame(
+        mean_data, columns=names, index=[int(f) for f in flexibilities]
+    )
+    ymin, ymax = mean_df.min().min(), mean_df.max().max()
+    offset = (ymax - ymin) * 0.40
+    ymin, ymax = ymin - offset, ymax + offset
+
+    for idx, ax in enumerate(axs):
+        mean_df.iloc[:, idx].plot(ax=ax, style="o-")
+        ax.axhline(y=0.0, color="gray", linestyle="--")
+        ax.set_ylabel(f"{names[idx].capitalize()}", labelpad=0)
+        ax.set_ylim([ymin, ymax])
+
+    axs[-1].set_xticks([int(f) for f in flexibilities])
+    axs[-1].set_xticklabels([f"{f}%" for f in flexibilities])
+    axs[-1].set_xlabel("Flexibility Steps")
+
+    plt.tight_layout()
+
+    output_path = snakemake.output.plot.split("capacity.pdf")[0] + "utilization_dc"
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
+    fig.savefig(os.path.join(output_path, "utilization_dc.pdf"), bbox_inches="tight")
+
+
 ####################################################################################################
 if __name__ == "__main__":
     # Detect running outside of snakemake and mock snakemake for testing
@@ -941,6 +993,14 @@ ci_abs_costs(
 objective_abs(df=df, rename_scen=rename_scen, locations=locations)
 
 
+# Change of datacenter utilization with flexibility
+
+if (
+    snakemake.config["ci"]["spatial_shifting"] == True
+    and snakemake.config["plot_timeseries"] == True
+):
+    utilization_dc(names, flexibilities)
+
 # TIME-SERIES DATA (per flexibility scenario)
 
 if snakemake.config["plot_timeseries"] == True:
@@ -990,10 +1050,10 @@ if snakemake.config["plot_timeseries"] == True:
                 df["snapshot"] = pd.to_datetime(df["snapshot"])
                 MIN = -int(
                     flex
-                )  # df["temporal shift"].min() #for flex co-opt case, value can exceed flex treshold
+                )  # df["temporal shift"].min() #for flex co-opt case, value can exceed flex threshold
                 MAX = +int(
                     flex
-                )  # df["temporal shift"].max() #for flex co-opt case, value can exceed flex treshold
+                )  # df["temporal shift"].max() #for flex co-opt case, value can exceed flex threshold
 
                 plot_heatmap_utilization(carrier="temporal shift")
 
@@ -1011,10 +1071,10 @@ if snakemake.config["plot_timeseries"] == True:
                 df["snapshot"] = pd.to_datetime(df["snapshot"])
                 MIN = -int(
                     flex
-                )  # df["spatial shift"].min() #for flex co-opt case, value can exceed flex treshold
+                )  # df["spatial shift"].min() #for flex co-opt case, value can exceed flex threshold
                 MAX = +int(
                     flex
-                )  # df["spatial shift"].max() #for flex co-opt case, value can exceed flex treshold
+                )  # df["spatial shift"].max() #for flex co-opt case, value can exceed flex threshold
 
                 plot_heatmap_utilization(carrier="spatial shift")
 
