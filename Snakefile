@@ -110,8 +110,7 @@ if config["solve_network"] == "solve":
             network=config[f'n_{year}_{config["time_sampling"]}'],
             costs="input/costs_{year}.csv",
         output:
-            network=RDIR
-            + "/networks/{year}/{zone}/{palette}/{policy}/{flexibility}.nc",
+            network=RDIR + "/networks/{year}/{zone}/{palette}/{policy}/{flexibility}.nc",
             grid_cfe=RDIR
             + "/networks/{year}/{zone}/{palette}/{policy}/{flexibility}.csv",
         log:
@@ -181,6 +180,22 @@ rule sync_plots:
     shell:
         """
         rsync -uvarh --no-g {params.cluster} report/plots
+        """
+
+
+rule zib_sync_solution:
+    params:
+        cluster=f"iriepin@z1.zib.de:/home/htc/iriepin/SCRATCH/space-time-optimization/results/{RUN}",
+    shell:
+        """
+        rsync -uvarh --no-g {params.cluster} results/
+        """
+
+
+rule zib_upload:
+    shell:
+        """
+        rsync -avz --exclude-from='.rsync-ignore' . iriepin@z1.zib.de:/home/htc/iriepin/SCRATCH/space-time-optimization/
         """
 
 

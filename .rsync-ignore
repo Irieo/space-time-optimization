@@ -1,0 +1,67 @@
+# SPDX-FileCopyrightText: 2023 Iegor Riepin, Tom Brown
+#
+# SPDX-License-Identifier: CC0-1.0
+
+.snakemake*
+.ipynb_checkpoints
+.vscode/
+
+__pycache__
+gurobi.log
+
+/misc
+/data
+/results
+/logs
+/workflow
+/talks
+/report_WP1
+/report_WP2
+/report_WP3
+
+*.org
+*~
+*.pdf
+
+*.csv
+*.pyc
+
+
+## Core latex/pdflatex auxiliary files:
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
+*.fmt
+*.fot
+*.cb
+*.cb2
+*.nav
+*.snm
+
+## Bibliography auxiliary files (bibtex/biblatex/biber):
+*.bbl
+*.bcf
+*.blg
+*-blx.aux
+*-blx.bib
+*.brf
+*.run.xml
+
+## Build tool auxiliary files:
+*.fdb_latexmk
+*.synctex
+*.synctex(busy)
+*.synctex.gz
+*.synctex.gz(busy)
+*.pdfsync
+
+
+## additional to .gitignore
+.git/
+.reuse/
+LICENSES/
+input/
