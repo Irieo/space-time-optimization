@@ -28,20 +28,19 @@ technology_data:
 ###################
 # Scenario controls
 
-run: test-IEDK
+
+# modelled region
+zone: "IEDK" #37-node network of ENTSO-E area | possible toy zones: "IE", "DE", "IEDK", "DKDE"
 
 #wildcards
 scenario:
-  flexibility: ['0', '40',] # possible deviation of requested load from nominal level [percentage of nominal load]
+  flexibility: ["0", "40"] # possible deviation of requested load from nominal level [percentage of nominal load]
   policy:  ["cfe100"] # "ref", "res100", "cfe..", "cfe100"
   palette: [
              "p1", # onwind + solar + battery
             # "p2", # onwind + solar + battery + LDES
             # "p3", # onwind + solar + battery + Allam cycle turbine with CCS
             ]
-  zone: [
-        "IEDK" #37-node network of ENTSO-E area | possible toy zones: "IE", "DE", "IEDK", "DKDE"
-        ]
   year: [
           "2025",
           #"2030"

@@ -12,7 +12,7 @@ def make_summary():
     fns = [
         fn
         for fn in snakemake.input
-        if "{}".format(year + "/" + zone + "/" + tech_palette + "/" + policy) in fn
+        if "{}".format(year + "/" + tech_palette + "/" + policy) in fn
     ]
 
     # Scenarios from filenames
@@ -53,7 +53,7 @@ if __name__ == "__main__":
 
     # When running via snakemake
     tech_palette = snakemake.wildcards.palette
-    zone = snakemake.wildcards.zone
+    zone = snakemake.config["zone"]
     year = snakemake.wildcards.year
     policy = snakemake.wildcards.policy
     datacenters = snakemake.config["ci"]["datacenters"]

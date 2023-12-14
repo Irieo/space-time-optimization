@@ -797,7 +797,7 @@ if __name__ == "__main__":
     policy = snakemake.wildcards.policy[:3]
     penetration = float(snakemake.wildcards.policy[3:]) / 100 if policy != "ref" else 0
     tech_palette = snakemake.wildcards.palette
-    zone = snakemake.wildcards.zone
+    zone = snakemake.config["zone"]
     year = snakemake.wildcards.year
 
     datacenters = snakemake.config["ci"]["datacenters"]
