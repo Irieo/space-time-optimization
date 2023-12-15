@@ -12,7 +12,8 @@ def make_summary():
     fns = [
         fn
         for fn in snakemake.input
-        if "{}".format(year + "/" + tech_palette + "/" + policy) in fn
+        if "{}".format(year + "/" + tech_palette + "/" + policy + "/" + distance + "/")
+        in fn
     ]
 
     # Scenarios from filenames
@@ -48,7 +49,11 @@ if __name__ == "__main__":
         from _helpers import mock_snakemake
 
         snakemake = mock_snakemake(
-            "make_summary", year="2030", zone="IE", palette="p3", policy="cfe100"
+            "make_summary",
+            year="2025",
+            palette="p1",
+            policy="cfe100",
+            distance="far",
         )
 
     # When running via snakemake
@@ -56,6 +61,7 @@ if __name__ == "__main__":
     zone = snakemake.config["zone"]
     year = snakemake.wildcards.year
     policy = snakemake.wildcards.policy
-    datacenters = snakemake.config["ci"]["datacenters"]
+    distance = snakemake.wildcards.distance
+    datacenters = snakemake.config["ci"][f"{distance}"]["datacenters"]
 
     make_summary()

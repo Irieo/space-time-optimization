@@ -787,7 +787,11 @@ if __name__ == "__main__":
         from _helpers import mock_snakemake
 
         snakemake = mock_snakemake(
-            "plot_summary", year="2025", zone="IEDK", palette="p1", policy="cfe100"
+            "plot_summary",
+            year="2025",
+            palette="p1",
+            policy="cfe100",
+            distance="far",
         )
 
     config = snakemake.config
@@ -800,9 +804,11 @@ if __name__ == "__main__":
     zone = snakemake.config["zone"]
     year = snakemake.wildcards.year
 
-    datacenters = snakemake.config["ci"]["datacenters"]
+    distance = snakemake.wildcards.distance
+    datacenters = config["ci"][f"{distance}"]["datacenters"]
     locations = list(datacenters.keys())
     names = list(datacenters.values())
+
     flexibilities = snakemake.config["scenario"]["flexibility"]
 
     # techs for CFE hourly matching, extracted from palette

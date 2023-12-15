@@ -375,7 +375,9 @@ def shutdown_lineexp(n: pypsa.Network) -> None:
     n.links.loc[n.links.carrier == "DC", "p_nom_extendable"] = False
 
 
-def limit_resexp(n: pypsa.Network, year: str, config: Dict[str, Any]) -> None:
+def limit_resexp(
+    n: pypsa.Network, year: str, datacenters: dict, config: Dict[str, Any]
+) -> None:
     """
     Limit expansion of renewable technologies per zone and carrier type
     as a ratio of max increase to 2021 capacity fleet (additional to zonal place availability constraint)
@@ -383,6 +385,7 @@ def limit_resexp(n: pypsa.Network, year: str, config: Dict[str, Any]) -> None:
     Args:
         n: The network object to be modified.
         year: The year of optimisation based on config setting.
+        datacenters: A dictionary containing the data center locations for drop mask.
         config: config.yaml settings
 
     Returns:
@@ -390,7 +393,6 @@ def limit_resexp(n: pypsa.Network, year: str, config: Dict[str, Any]) -> None:
     """
     ratio = config["global"][f"limit_res_exp_{year}"]
 
-    datacenters = config["ci"]["datacenters"]
     list_datacenters = list(datacenters.values())
     mask_datacenters = n.generators.index.str.contains(
         "|".join(list_datacenters), case=False
@@ -1351,9 +1353,9 @@ if __name__ == "__main__":
         snakemake = mock_snakemake(
             "solve_network",
             year="2025",
-            zone="IEDK",
             palette="p1",
             policy="cfe100",
+            distance="far",
             flexibility="40",
         )
 
@@ -1372,7 +1374,8 @@ if __name__ == "__main__":
     profile_shape = config["ci"]["profile_shape"]
     flexibility = snakemake.wildcards.flexibility
 
-    datacenters = config["ci"]["datacenters"]
+    distance = snakemake.wildcards.distance
+    datacenters = config["ci"][f"{distance}"]["datacenters"]
     locations = list(datacenters.keys())
     names = list(datacenters.values())
 
@@ -1411,7 +1414,7 @@ if __name__ == "__main__":
         cost_parametrization(n, config)
 
         shutdown_lineexp(n)
-        limit_resexp(n, year, config)
+        limit_resexp(n, year, datacenters, config)
         nuclear_policy(n, config)
         coal_policy(n, year, config)
         biomass_potential(n)

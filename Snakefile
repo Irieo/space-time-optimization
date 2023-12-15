@@ -23,7 +23,7 @@ url = f"https://raw.githubusercontent.com/PyPSA/technology-data/{version}/output
 rule merge_all_plots:
     input:
         expand(
-            RDIR + "/plots/{year}/{palette}/{policy}/SUMMARY.pdf",
+            RDIR + "/plots/{year}/{palette}/{policy}/{distance}/SUMMARY.pdf",
             **config["scenario"]
         ),
 
@@ -31,7 +31,7 @@ rule merge_all_plots:
 rule plot_summary_all_networks:
     input:
         expand(
-            RDIR + "/plots/{year}/{palette}/{policy}/capacity.pdf",
+            RDIR + "/plots/{year}/{palette}/{policy}/{distance}/capacity.pdf",
             **config["scenario"]
         ),
 
@@ -39,7 +39,7 @@ rule plot_summary_all_networks:
 rule make_summary_all_networks:
     input:
         expand(
-            RDIR + "/csvs/{year}/{palette}/{policy}/summary.csv",
+            RDIR + "/csvs/{year}/{palette}/{policy}/{distance}/summary.csv",
             **config["scenario"]
         ),
 
@@ -47,7 +47,7 @@ rule make_summary_all_networks:
 rule summarise_all_networks:
     input:
         expand(
-            RDIR + "/summaries/{year}/{palette}/{policy}/{flexibility}.yaml",
+            RDIR + "/summaries/{year}/{palette}/{policy}/{distance}/{flexibility}.yaml",
             **config["scenario"]
         ),
 
@@ -55,17 +55,17 @@ rule summarise_all_networks:
 rule solve_all_networks:
     input:
         expand(
-            RDIR + "/networks/{year}/{palette}/{policy}/{flexibility}.nc",
+            RDIR + "/networks/{year}/{palette}/{policy}/{distance}/{flexibility}.nc",
             **config["scenario"]
         ),
 
 
 rule merge_plots:
     input:
-        plot=RDIR + "/plots/{year}/{palette}/{policy}/capacity.pdf",
+        plot=RDIR + "/plots/{year}/{palette}/{policy}/{distance}/capacity.pdf",
         config=RDIR + "/configs/config.yaml",
     output:
-        final=RDIR + "/plots/{year}/{palette}/{policy}/SUMMARY.pdf",
+        final=RDIR + "/plots/{year}/{palette}/{policy}/{distance}/SUMMARY.pdf",
     threads: 2
     resources:
         mem_mb=2000,
@@ -75,12 +75,12 @@ rule merge_plots:
 
 rule plot_summary:
     input:
-        grid_cfe=RDIR + "/networks/{year}/{palette}/{policy}/0.csv",
-        networks=RDIR + "/networks/{year}/{palette}/{policy}/0.nc",
-        summary=RDIR + "/csvs/{year}/{palette}/{policy}/summary.csv",
+        grid_cfe=RDIR + "/networks/{year}/{palette}/{policy}/{distance}/0.csv",
+        networks=RDIR + "/networks/{year}/{palette}/{policy}/{distance}/0.nc",
+        summary=RDIR + "/csvs/{year}/{palette}/{policy}/{distance}/summary.csv",
         config=RDIR + "/configs/config.yaml",
     output:
-        plot=RDIR + "/plots/{year}/{palette}/{policy}/capacity.pdf",
+        plot=RDIR + "/plots/{year}/{palette}/{policy}/{distance}/capacity.pdf",
     threads: 2
     resources:
         mem_mb=2000,
@@ -91,11 +91,11 @@ rule plot_summary:
 rule make_summary:
     input:
         expand(
-            RDIR + "/summaries/{year}/{palette}/{policy}/{flexibility}.yaml",
+            RDIR + "/summaries/{year}/{palette}/{policy}/{distance}/{flexibility}.yaml",
             **config["scenario"]
         ),
     output:
-        summary=RDIR + "/csvs/{year}/{palette}/{policy}/summary.csv",
+        summary=RDIR + "/csvs/{year}/{palette}/{policy}/{distance}/summary.csv",
     threads: 2
     resources:
         mem_mb=2000,
@@ -110,16 +110,16 @@ if config["solve_network"] == "solve":
             network=config[f'n_{year}_{config["time_sampling"]}'],
             costs="input/costs_{year}.csv",
         output:
-            network=RDIR + "/networks/{year}/{palette}/{policy}/{flexibility}.nc",
+            network=RDIR + "/networks/{year}/{palette}/{policy}/{distance}/{flexibility}.nc",
             grid_cfe=RDIR
-            + "/networks/{year}/{palette}/{policy}/{flexibility}.csv",
+            + "/networks/{year}/{palette}/{policy}/{distance}/{flexibility}.csv",
         log:
             solver=RDIR
-            + "/logs/{year}/{palette}/{policy}/{flexibility}_solver.log",
+            + "/logs/{year}/{palette}/{policy}/{distance}/{flexibility}_solver.log",
             python=RDIR
-            + "/logs/{year}/{palette}/{policy}/{flexibility}_python.log",
+            + "/logs/{year}/{palette}/{policy}/{distance}/{flexibility}_python.log",
             memory=RDIR
-            + "/logs/{year}/{palette}/{policy}/{flexibility}_memory.log",
+            + "/logs/{year}/{palette}/{policy}/{distance}/{flexibility}_memory.log",
         threads: 12
         resources:
             mem=8000,
@@ -129,10 +129,10 @@ if config["solve_network"] == "solve":
 
 rule summarise_network:
     input:
-        network=RDIR + "/networks/{year}/{palette}/{policy}/{flexibility}.nc",
-        grid_cfe=RDIR + "/networks/{year}/{palette}/{policy}/{flexibility}.csv",
+        network=RDIR + "/networks/{year}/{palette}/{policy}/{distance}/{flexibility}.nc",
+        grid_cfe=RDIR + "/networks/{year}/{palette}/{policy}/{distance}/{flexibility}.csv",
     output:
-        yaml=RDIR + "/summaries/{year}/{palette}/{policy}/{flexibility}.yaml",
+        yaml=RDIR + "/summaries/{year}/{palette}/{policy}/{distance}/{flexibility}.yaml",
     threads: 2
     resources:
         mem_mb=2000,
