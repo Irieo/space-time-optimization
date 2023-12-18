@@ -47,7 +47,8 @@ rule make_summary_all_networks:
 rule summarise_all_networks:
     input:
         expand(
-            RDIR + "/summaries/{year}/{palette}/{policy}/{distance}/{flexibility}.yaml",
+            RDIR
+            + "/summaries/{year}/{palette}/{policy}/{distance}/{flexibility}.yaml",
             **config["scenario"]
         ),
 
@@ -91,7 +92,8 @@ rule plot_summary:
 rule make_summary:
     input:
         expand(
-            RDIR + "/summaries/{year}/{palette}/{policy}/{distance}/{flexibility}.yaml",
+            RDIR
+            + "/summaries/{year}/{palette}/{policy}/{distance}/{flexibility}.yaml",
             **config["scenario"]
         ),
     output:
@@ -110,7 +112,8 @@ if config["solve_network"] == "solve":
             network=config[f'n_{year}_{config["time_sampling"]}'],
             costs="input/costs_{year}.csv",
         output:
-            network=RDIR + "/networks/{year}/{palette}/{policy}/{distance}/{flexibility}.nc",
+            network=RDIR
+            + "/networks/{year}/{palette}/{policy}/{distance}/{flexibility}.nc",
             grid_cfe=RDIR
             + "/networks/{year}/{palette}/{policy}/{distance}/{flexibility}.csv",
         log:
@@ -130,7 +133,8 @@ if config["solve_network"] == "solve":
 rule summarise_network:
     input:
         network=RDIR + "/networks/{year}/{palette}/{policy}/{distance}/{flexibility}.nc",
-        grid_cfe=RDIR + "/networks/{year}/{palette}/{policy}/{distance}/{flexibility}.csv",
+        grid_cfe=RDIR
+        + "/networks/{year}/{palette}/{policy}/{distance}/{flexibility}.csv",
     output:
         yaml=RDIR + "/summaries/{year}/{palette}/{policy}/{distance}/{flexibility}.yaml",
     threads: 2
@@ -185,17 +189,17 @@ rule sync_plots:
 
 rule zib_sync_solution:
     params:
-        cluster=f"iriepin@z1.zib.de:/home/htc/iriepin/SCRATCH/space-time-optimization/results/{RUN}",
+        cluster=f"z1:/home/htc/iriepin/SCRATCH/space-time-optimization/results/{RUN}",
     shell:
         """
-        rsync -uvarh --no-g {params.cluster} results/
+        rsync -avz {params.cluster} results/
         """
 
 
 rule zib_upload:
     shell:
         """
-        rsync -avz --exclude-from='.rsync-ignore' . iriepin@z1.zib.de:/home/htc/iriepin/SCRATCH/space-time-optimization/
+        rsync -avz --exclude-from='.rsync-ignore' . z1:/home/htc/iriepin/SCRATCH/space-time-optimization/
         """
 
 

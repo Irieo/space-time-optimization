@@ -791,7 +791,7 @@ if __name__ == "__main__":
             year="2025",
             palette="p1",
             policy="cfe100",
-            distance="far",
+            distance="IEIE",
         )
 
     config = snakemake.config
@@ -1000,16 +1000,18 @@ objective_abs(df=df, rename_scen=rename_scen, locations=locations)
 
 
 # Change of datacenter utilization with flexibility
+# if len(names) > 1:
 
 if (
     snakemake.config["ci"]["spatial_shifting"] == True
     and snakemake.config["plot_timeseries"] == True
+    and len(names) > 1
 ):
     utilization_dc(names, flexibilities)
 
 # TIME-SERIES DATA (per flexibility scenario)
 
-if snakemake.config["plot_timeseries"] == True:
+if snakemake.config["plot_timeseries"] == True and len(names) > 1:
     flexibilities = snakemake.config["scenario"]["flexibility"]
 
     # CARBON INTENSITY HEATMAPS
