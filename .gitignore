@@ -41,6 +41,20 @@ gurobi.log
 *.cb2
 *.nav
 *.snm
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.acn
+*.ist
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.spl
 
 ## Bibliography auxiliary files (bibtex/biblatex/biber):
 *.bbl

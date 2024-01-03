@@ -1,0 +1,269 @@
+% SPDX-FileCopyrightText: 2023 Iegor Riepin, Tom Brown
+%
+% SPDX-License-Identifier: CC-BY-4.0
+
+\documentclass[11pt, 5p, nopreprintline]{elsarticle}
+
+\journal{TBA}
+
+\bibliographystyle{elsarticle-num}
+\biboptions{numbers,sort&compress}
+
+\hfuzz=6.002pt %https://tex.stackexchange.com/questions/13715/how-to-suppress-overfull-hbox-warnings-up-to-some-maximum
+
+% format hacks
+\usepackage{libertine}
+\usepackage{libertinust1math}
+\usepackage{amsmath}                 % Provides advanced math typesetting and environments
+\usepackage{bbold}                   % Provides blackboard bold font for numbers
+\usepackage{graphicx}                % Handles the inclusion of graphics files
+\usepackage{eurosym}                 % Provides the Euro currency symbol
+\usepackage{mathtools}               % Enhances amsmath package, adding new symbols and tools
+\usepackage{url}                     % Handles the formatting of URLs
+\usepackage{booktabs}                % Improves the quality of tables in LaTeX
+\usepackage{epstopdf}                % Automatically converts EPS files to PDF
+\usepackage{xfrac}                   % Provides a consistent way to typeset fractions
+\usepackage{tabularx}                % Enhances the standard LaTeX tables
+\usepackage{bm}                      % Provides access to bold math symbols
+\usepackage{subcaption}              % Provides support for subfigures and subtables
+\usepackage{longtable}               % Allows the creation of multi-page tables
+\usepackage{multirow}                % Enables cells spanning multiple rows in tables
+\usepackage{threeparttable}          % Provides additional functionality for tables
+\usepackage{pdflscape}               % Allows landscape pages in PDF output
+\usepackage[svgnames]{xcolor}    	 % Load xcolor packages
+\usepackage[export]{adjustbox}       % Provides tools for resizing and trimming images
+\usepackage[version=4]{mhchem}       % Provides typesetting for chemical equations
+\usepackage{xurl} 				     % Allows line breaks in URLs
+\usepackage[colorlinks]{hyperref}    % Creates hyperlinks in the document
+\usepackage[parfill]{parskip}        % Adjusts paragraph spacing
+\usepackage[nameinlink,sort&compress,capitalise,noabbrev]{cleveref} % Enhanced cross-referencing
+\usepackage[leftcaption,raggedright]{sidecap} % Provides side captions for figures and tables
+\usepackage[prependcaption,textsize=footnotesize]{todonotes} % Allows inline and margin notes
+\usepackage{siunitx}                 % Provides consistent formatting for units and numbers
+\usepackage{csquotes} 				 % For handling inline and display quotations
+\usepackage[acronym, automake, nonumberlist]{glossaries-extra}
+
+
+\usepackage{float}
+\usepackage{lipsum}
+\usepackage{mdframed}
+\usepackage[resetlabels,labeled]{multibib} % Allows multiple bibliographies with own styles/numbering
+\newcites{S}{Supplementary References}
+\bibliographystyleS{elsarticle-num}
+
+\sisetup{
+	range-units = single,
+	per-mode = symbol
+}
+\DeclareSIUnit\year{a}
+\DeclareSIUnit{\tco}{t_{\ce{CO2}}}
+\DeclareSIUnit{\sieuro}{\mbox{\euro}}
+
+\setlength{\abovecaptionskip}{1pt} 	% Adjust the space above the caption
+\graphicspath{ 						% Allows for multiple directories
+	{../results/paper-wp1},
+	}
+
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\set}[1]{\left\{#1\right\} }
+\DeclareMathOperator*{\argmin}{\arg\!\min}
+\newcommand{\R}{\mathbb{R} }
+\newcommand{\B}{\mathbb{B} }
+\newcommand{\N}{\mathbb{N} }
+\newcommand{\co}{\ce{CO2}}
+\def\el{${}_{\textrm{el}}$}
+\def\th{${}_{\textrm{th}}$}
+\def\deg{${}^\circ$}
+
+\newdefinition{rmk}{Remark}
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{res}[thm]{Result}  % Result w/o box env
+%\newmdtheoremenv[
+%  backgroundcolor=Wheat, % Background color
+%  linewidth=0.5pt, % Width of the line around the box
+%  frametitlefont=\normalfont\bfseries, % Font for the box title
+%]{res}[thm]{Result}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% acronyms
+\makeglossaries
+
+% Proper nouns
+\newacronym{eu}{EU}{European Union}
+\newacronym{bdew}{BDEW}{Bundesverband der Energie- und Wasserwirtschaft}
+\newacronym{dea}{DEA}{Danish Energy Agency}
+\newacronym{jrc}{JRC}{Joint Research Center}
+\newacronym{tyndp}{TYNDP}{Ten-Year Network Development Plan}
+\newacronym{entsoe}{ENTSO-E}{European Network for Transmission System Operators for Electricity}
+\newacronym{entsog}{ENTSO-G}{European Network of Transmission System Operators for Gas}
+
+% Enegy tech concepts
+\newacronym{tes}{TES}{Thermal Energy Storage (in form of water tanks)}
+\newacronym{chp}{CHP}{Combined Heat and Power plant}
+\newacronym{cop}{COP}{Coefficient of Performance}
+\newacronym{PV}{PV}{Solar photovoltaics}
+\newacronym{ghg}{GHG}{Greenhouse gas}
+\newacronym{helmeth}{HELMETH}{Integrated High-Temperature Electrolysis and Methanation for Effective Power to Gas Conversion}
+\newacronym{ocgt}{OCGT}{Open Cycle Gas Turbine}
+\newacronym{v2g}{V2G}{Vehicle to Grid}
+\newacronym{dsm}{DSM}{Demand Side Management}
+\newacronym{hvdc}{HVDC}{High Voltage Direct Current}
+\newacronym{phs}{PHS}{Pumped Hydro Storage}
+\newacronym{dac}{DAC}{Direct Air Capture}
+\newacronym{sng}{SNG}{Synthetic Natural Gas}
+\newacronym{res}{RES}{Renewable Energy Sources}
+\newacronym{cfe}{CFE}{Carbon-Free Electricity}
+\newacronym{ldes}{LDES}{Long Duration Energy Storage}
+\newacronym{ccs}{CCS}{Carbon Capture and Sequestration}
+
+% Energy economics and finance concepts
+\newacronym{fom}{FOM}{Fixed Operation and Maintenance costs}
+\newacronym{vom}{VOM}{Variable Operation and Maintenance costs}
+\newacronym{capex}{CAPEX}{Capital expenditures}
+\newacronym{opex}{OPEX}{Operational expenditures}
+\newacronym{ppa}{PPA}{Power Purchase Agreement}
+\newacronym{ptc}{PTC}{Production Tax Credit}
+\newacronym{necp}{NECP}{National Energy and Climate Plan}
+\newacronym{ets}{ETS}{Emissions Trading System}
+\newacronym{cfd}{CfD}{Contract for Difference}
+\newacronym{go}{GO}{Guarantees of Origin}
+\newacronym{rec}{REC}{Renewable Energy Certificate}
+
+% Other
+\newacronym{pypsa}{PyPSA}{Python for Power System Analysis}
+\newacronym{nuts}{NUTS}{Nomenclature of Territorial Units for Statistics}
+\newacronym{ci}{C\&I}{Corporate and Industry (sectors)}
+\newacronym{ngo}{NGO}{Non-Governmental Organization}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\begin{frontmatter}
+
+	\title{Draft: signals for effective load shaping strategies for clean computing}
+
+	\author[tubaddress]{Iegor Riepin}
+	\ead{iegor.riepin@tu-berlin.de}
+	\author[tubaddress]{Tom Brown}
+	\ead{t.brown@tu-berlin.de}
+
+	\address[tubaddress]{Department of Digital Transformation in Energy Systems, TU Berlin, Germany}
+
+	\begin{abstract}
+		\input{sections/abstract.tex}
+	\end{abstract}
+
+	\begin{keyword}
+		24/7 carbon-free electricity,
+		Demand side management,
+		Energy modelling,
+		Renewable energy
+	\end{keyword}
+
+	% \begin{graphicalabstract}
+	% \end{graphicalabstract}
+
+\end{frontmatter}
+
+\tableofcontents
+
+\section{Introduction}
+\label{sec:intro}
+\input{sections/introduction.tex}
+
+\section{Methods and experimental design}
+\label{sec:methods}
+\input{sections/methods.tex}
+
+\section{Results}
+\label{sec:results}
+\input{sections/results.tex}
+
+\section{Discussion}
+\label{sec:discussion}
+\input{sections/discussion.tex}
+
+\section{Conclusion}
+\label{sec:conclusion}
+\input{sections/conclusion.tex}
+
+\section*{Acknowledgements}
+
+[..]
+
+We thank the following people for fruitful discussions [..]
+
+\section*{Author Contributions}
+
+% following https://casrai.org/credit/
+
+\textbf{Iegor Riepin}:
+Conceptualization --
+Data curation --
+Formal Analysis --
+Investigation --
+Methodology --
+Software --
+Validation --
+Visualization --
+Writing - original draft
+
+\textbf{Tom Brown}:
+Conceptualization --
+Methodology --
+Software --
+Supervision --
+Writing - review \& editing
+
+\section*{Data and Code Availability}
+\label{sec:code}
+
+The simulations were carried out with PyPSA --- an open-source software framework for simulating and optimising modern energy systems \cite{brownPyPSAPythonPower2018}.
+
+All code, input data and results are published under an open license. The code to reproduce the experiments is available at GitHub \cite{github-spacetime}.
+
+\printglossary[type=\acronymtype]
+
+% tidy with https://flamingtempura.github.io/bibtex-tidy/
+\addcontentsline{toc}{section}{References}
+\renewcommand{\ttdefault}{\sfdefault}
+\bibliography{bibliography}
+
+% supplementary information
+
+\newpage
+
+\makeatletter
+\renewcommand \thesection{S\@arabic\c@section}
+\renewcommand\thetable{S\@arabic\c@table}
+\renewcommand \thefigure{S\@arabic\c@figure}
+\makeatother
+\renewcommand{\citenumfont}[1]{S#1}
+\setcounter{equation}{0}
+\setcounter{figure}{0}
+\setcounter{table}{0}
+\setcounter{section}{0}
+
+
+\section*{Supplementary Information}
+\label{sec:si}
+
+\section{Technology assumptions}
+\label{sec:si_1}
+% \input{sections/supplementary_1.tex}
+
+\section{Background system assumptions}
+\label{sec:si_2}
+% \input{sections/supplementary_2.tex}
+
+% \addcontentsline{toc}{section}{Supplementary References}
+% \renewcommand{\ttdefault}{\sfdefault}
+% \bibliographyS{paper_247CFE}
+
+\end{document}
