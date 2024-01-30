@@ -2,4 +2,10 @@
 %
 % SPDX-License-Identifier: CC-BY-4.0
 
-\textbf{Optimisation model --} The simulations were carried out with the modified version of the open European power system model PyPSA-Eur, built using the open framework PyPSA \cite{brownPyPSAPythonPower2018}.
+\textbf{Methods and tools --} The simulations were carried out with the open-source software PyPSA for energy system modelling \cite{horschPyPSAEurOpenOptimisation2018} and Linopy for optimization \cite{LinopyLinearOptimization2024}.
+The mathematical model is a system-wide cost-minimisation problem. 
+The objective of the model is to co-optimise (i) investment and dispatch decisions of generation and storage assets done by datacenters to meet their electricity demand in line with 24/7 CFE objectives, (ii) space-time load-shifting decisions subject to datacenter flexibility constraints, as well as (iii) investment and dispatch decisions of assets in the rest of the European electricity system to meet the demand of other consumers.
+The model formulation includes the the linear optimal power flow approximation on the transmission network. 
+This work uses a brownfield investment approach, which means that the model includes information about the existing assets of the European electricity system. 
+
+The electricity system dispatch and investment problem of this type is a standard in the energy modelling literature \cite{OpenModelsWikib}, the 24/7 CFE procurement model is based on the former work in this area \cite{riepinMeansCostsSystemlevel2023, xu-247CFE-report}, and the space-time load flexibility model is inspired by the work of Zhang et al. \cite{zhangRemuneratingSpaceTime2022}. The space-time load flexibility as a degree of freedom within the 24/7 CFE matching problem is a novel contribution of this work.
