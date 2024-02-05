@@ -85,7 +85,8 @@ def geoscope(zone: str):
     # A few toy regional networks for test & play purposes
     IRELAND = ["IE5 0", "GB0 0", "GB5 0"]
     DKDE = ["DE1 0", "DK1 0", "DK2 0", "PL1 0"]
-    IEDK = IRELAND + ["DK1 0", "DK2 0"] + ["DE1 0", "NO2 0", "SE2 0"]
+    IEDK = IRELAND + ["DK1 0", "DK2 0"] + ["DE1 0", "NL1 0"]
+    IEDKFR = ["IE5 0", "DK1 0", "FR1 0"]
 
     # Full geographical scope
     EU = n.buses[n.buses["carrier"] == "AC"].index.tolist()
@@ -94,6 +95,24 @@ def geoscope(zone: str):
         "IE": IRELAND,
         "IEDK": IEDK,
         "DKDE": DKDE,
+        "IEDKFR": IEDKFR,  # "TEST" is a toy network for testing purposes
+        "DKDEFR": ["DE1 0", "DK1 0"] + ["FR1 0"],
+        "DKDEES": ["DE1 0", "DK1 0"] + ["ES1 0"],
+        "DKPLES": ["PL1 0", "DK1 0"] + ["ES1 0"],
+        "IEDEES": ["IE5 0", "DE1 0"] + ["ES1 0"],
+        "DKATES": ["AT1 0", "DK1 0"] + ["ES1 0"],
+        "DKBEES": ["BE1 0", "DK1 0"] + ["ES1 0"],
+        "DKLTES": ["LT6 0", "DK1 0"] + ["ES1 0"],
+        "DKLVPT": ["LV6 0", "DK1 0"] + ["PT1 0"],
+        "DKGRPT": ["GR1 0", "DK1 0"] + ["PT1 0"],
+        "GRPT": ["GR1 0", "PT1 0"],
+        "DKFRDE": ["DE1 0", "DK1 0"] + ["FR1 0"],
+        "DKFRGB": ["DK1 0", "FR1 0"] + ["GB0 0"],
+        "DKGBIE": ["DK1 0", "GB0 0"] + ["IE5 0"],
+        "IEDKEE": ["IE5 0", "DK1 0"] + ["EE6 0"],
+        "DKDEPT": ["DE1 0", "DK1 0"] + ["PT1 0"],
+        "DKIEPT": ["IE5 0", "DK1 0"] + ["PT1 0"],
+        "DKPLPT": ["PL1 0", "DK1 0"] + ["PT1 0"],
         "EU": EU,
     }.get(zone)
 

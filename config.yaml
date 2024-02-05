@@ -24,18 +24,19 @@ retrieve_cost_data: True
 technology_data:
   year: 2025
   version: v0.6.2
-
+  
 ###################
 # Scenario controls
 
+run: DKDEPT-1H-allflex-noexcess-nocostshifts-manysteps # name of the run
 
 # modelled region
-zone: "IEDK" #37-node network of ENTSO-E area | possible toy zones: "IE", "DE", "IEDK", "DKDE"
+zone: "DKDEPT" #37-node network of ENTSO-E area | possible toy zones: "IE", "DE", "IEDK", "DKDE"
 
 #wildcards
 scenario:
-  flexibility: ["0", "40"] # possible deviation of requested load from nominal level [percentage of nominal load]
-  distance: ['near', 'far'] # datacenter pairs
+  flexibility: ["0", "10", "20", "30", "40"] # possible deviation of requested load from nominal level [percentage of nominal load]
+  distance: ['DKDEPT'] # list of datacenter locations
   policy:  ["cfe100"] # "ref", "res100", "cfe..", "cfe100"
   palette: [
              "p1", # onwind + solar + battery
@@ -49,23 +50,63 @@ scenario:
 
 # CI consumer settings
 ci:
-  near:
+  IEIE:
+    datacenters: {"IE5 0": "Ireland"}
+  IENI:
+    datacenters: {"IE5 0": "Ireland", "GB5 0": "Northern Ireland"}
+  IEGB:
+    datacenters: {"IE5 0": "Ireland", "GB0 0": "Great Britain"}
+  IENL: 
+    datacenters: {"IE5 0": "Ireland", "NL1 0": "Netherlands"}  
+  IEDK:
     datacenters: {"IE5 0": "Ireland", "DK1 0": "Denmark"}
-  far:
-    datacenters: {"IE5 0": "Ireland", "GB0 0": "UK"}
+  DKDEFR:
+    datacenters: {"DK1 0": "Denmark", "DE1 0": "Germany", "FR1 0": "France"}
+  DKDEES:
+    datacenters: {"DK1 0": "Denmark", "DE1 0": "Germany", "ES1 0": "Spain"}
+  DKPLES:
+    datacenters: {"DK1 0": "Denmark", "PL1 0": "Poland", "ES1 0": "Spain"}
+  DKATES:
+    datacenters: {"DK1 0": "Denmark", "AT1 0": "Austria", "ES1 0": "Spain"}
+  DKBEES:
+    datacenters: {"DK1 0": "Denmark", "BE1 0": "Belgium", "ES1 0": "Spain"}
+  DKLTES:
+    datacenters: {"DK1 0": "Denmark", "LT6 0": "Lithuania", "ES1 0": "Spain"}
+  DKLTPT:
+    datacenters: {"DK1 0": "Denmark", "LT6 0": "Lithuania", "PT1 0": "Portugal"}
+  DKLVPT:
+    datacenters: {"DK1 0": "Denmark", "LV6 0": "Latvia", "PT1 0": "Portugal"}
+  DKGRPT:
+    datacenters: {"DK1 0": "Denmark", "GR1 0": "Greece", "PT1 0": "Portugal"}
+  GRPT: 
+    datacenters: {"GR1 0": "Greece", "PT1 0": "Portugal"}
+  DKFRDE:
+    datacenters: {"DK1 0": "Denmark", "FR1 0": "France", "DE1 0": "Germany"}
+  DKFRGB:
+    datacenters: {"DK1 0": "Denmark", "FR1 0": "France", "GB0 0": "UK"}
+  DKGBIE:
+    datacenters: {"DK1 0": "Denmark", "GB0 0": "UK", "IE5 0": "Ireland"}
+  IEDKEE:
+    datacenters: {"IE5 0": "Ireland", "DK1 0": "Denmark", "EE6 0": "Estonia"}
+  DKDEPT:
+    datacenters: {"DK1 0": "Denmark", "DE1 0": "Germany", "PT1 0": "Portugal"}
+  DKIEPT:
+    datacenters: {"DK1 0": "Denmark", "IE5 0": "Ireland", "PT1 0": "Portugal"}
+  DKPLPT:
+    datacenters: {"DK1 0": "Denmark", "PL1 0": "Poland", "PT1 0": "Portugal"}
   profile_shape: "baseload" #"baseload", "datacenter", "industry"
   load: 100. # nominal load in MW
   res_techs: ["onwind","solar"]
-  excess_share: 0.2
+  excess_share: 0.0
   spatial_shifting: True #turns on/off spatial flexibiilty  (aka virtual links)
   temporal_shifting: True #turns on/off temporal flexibiilty (aka DSM)
-  netshift_zero: True #turns on/off netshift zero constraint 
+  netshift_zero: False #turns on/off netshift zero constraint 
 
 ###################
 # Time-series management
 
-time_sampling: "3H" # one of ["1H", "3H"]
-plot_timeseries: False
+time_sampling: "1H" # one of ["1H", "3H"]
+plot_timeseries: True
 
 
 ###################
