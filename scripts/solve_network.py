@@ -773,7 +773,7 @@ def add_vl(n, names: List[str]) -> None:
                     bus0=names[i],
                     bus1=names[j],
                     carrier="virtual_link",
-                    marginal_cost=0.001,  # large enough to avoid optimization artifacts, small enough not to influence PPA portfolio
+                    marginal_cost=1e-5,  # large enough to avoid optimization artifacts, small enough not to influence PPA portfolio
                     p_nom=1e6,
                 )
 
@@ -833,7 +833,7 @@ def add_dsm(n) -> None:
             carrier="dsm",
             efficiency=1,
             p_nom=1e6,
-            marginal_cost=0.01,
+            marginal_cost=1e-5,
             p_nom_extendable=False,
         )
 
@@ -845,7 +845,7 @@ def add_dsm(n) -> None:
             carrier="dsm",
             efficiency=1,
             p_nom=1e6,
-            marginal_cost=0.01,
+            marginal_cost=1e-5,
             p_nom_extendable=False,
         )
 
@@ -1356,9 +1356,9 @@ def solve_network(
         )
 
         for location, name in zip(locations, names):
-            grid_cfe_df.loc[
-                :, (f"{location}", f"iteration {i+1}")
-            ] = calculate_grid_cfe(n, name=name, node=location, config=config)
+            grid_cfe_df.loc[:, (f"{location}", f"iteration {i+1}")] = (
+                calculate_grid_cfe(n, name=name, node=location, config=config)
+            )
 
     grid_cfe_df.to_csv(snakemake.output.grid_cfe)
 
@@ -1374,7 +1374,7 @@ if __name__ == "__main__":
             year="2025",
             palette="p1",
             policy="cfe100",
-            distance="far",
+            distance="DKDEFR",
             flexibility="40",
         )
 
