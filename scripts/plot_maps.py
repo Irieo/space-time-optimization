@@ -5,16 +5,8 @@
 """
 Auxiliary plotting functions:
 (i) a generation capacity fleet and transmission infrastructure
-(ii) data center locations
+(ii) datacenter locations
 
-Keep note that in this project each network has four stages:
-1) A (raw) input network from PyPSA-Eur
-2) A regionally- and component-wise stripped input network
-3) (2) with policy adjustments for nuclear/lignite/etc, i.e.,
-    a brownfield fleet for the target year that is an input for optimization.
-4) A solved network
-
-This script is not integrated into the Snakemake workflow.
 Output: map-fleet.png and map-DCs.png are stored in ../study/images
 """
 
@@ -243,41 +235,14 @@ def plot_map(
     )
 
 
-def plot_datacenters(network, datacenters):
-    n = network.copy()
-    assign_location(n)
+def plot_datacenters_on_europe_map(network, datacenters):
 
-    # Drop pypsa-eur-sec artificial buses connected to equator
-    n.buses.drop(n.buses.index[n.buses.carrier != "AC"], inplace=True)
+    projection = ccrs.PlateCarree()
+    fig, ax = plt.subplots(figsize=(10, 8), subplot_kw={"projection": projection})
 
-    # Drop virtual stores
-    n.stores.drop(n.stores[n.stores.index.str.contains("EU")].index, inplace=True)
+    ax.set_extent([-15, 30, 35, 65], crs=ccrs.PlateCarree())
 
-    # Drop DSM links
-    n.links.drop(n.links[n.links.carrier == "dsm"].index, inplace=True)
-
-    # Drop data center nodes
-    for name in datacenters:
-        if name in n.buses.index:
-            n.mremove("Bus", [name])
-
-    # Load the geometries of datacenters
-    world = gpd.read_file(gpd.datasets.get_path("naturalearth_lowres"))
-
-    # Get the centroids of the specified datacenters
-    centroids = geocode(datacenters, provider="nominatim", user_agent="myGeocoder")
-
-    # Extract the geometry (Point) objects from the GeoDataFrame
-    centroids = centroids.geometry
-
-    # Set up the figure and axes
     map_opts = {
-        "boundaries": [
-            n.buses.x.min() - 3,
-            n.buses.x.max() + 3,
-            n.buses.y.min() - 3,
-            n.buses.y.max() + 3,
-        ],
         "color_geomap": {
             "ocean": "lightblue",
             "land": "white",
@@ -286,11 +251,7 @@ def plot_datacenters(network, datacenters):
         },
     }
 
-    fig, ax = plt.subplots(subplot_kw={"projection": ccrs.EqualEarth(n.buses.x.mean())})
-    fig.set_size_inches(9, 6)
-
-    # Plot the country shapes
-    ax.set_extent(map_opts["boundaries"], crs=ccrs.PlateCarree())
+    # Add map features with custom styles
     ax.add_feature(
         cfeature.OCEAN.with_scale("50m"),
         facecolor=map_opts["color_geomap"]["ocean"],
@@ -301,8 +262,6 @@ def plot_datacenters(network, datacenters):
         facecolor=map_opts["color_geomap"]["land"],
         zorder=0,
     )
-
-    # Add borders and coastline with adjusted linewidth and alpha
     ax.add_feature(
         cfeature.BORDERS.with_scale("50m"),
         edgecolor=map_opts["color_geomap"]["border"],
@@ -318,33 +277,48 @@ def plot_datacenters(network, datacenters):
         zorder=1,
     )
 
-    # Plot the interconnected nodes
+    n = network.copy()
+    assign_location(n)
+
+    n.buses.drop(n.buses.index[n.buses.carrier != "AC"], inplace=True)
+    n.stores.drop(n.stores[n.stores.index.str.contains("EU")].index, inplace=True)
+    n.links.drop(n.links[n.links.carrier == "dsm"].index, inplace=True)
+
+    dc_locations = n.buses.loc[datacenters.keys(), ["x", "y"]]
+
+    ax.scatter(
+        dc_locations["x"],
+        dc_locations["y"],
+        color="darkblue",
+        label="Datacenter locations",
+        transform=ccrs.Geodetic(),
+        zorder=5,
+        s=100,
+    )
+
     connections = set()
-    for i, centroid_i in centroids.iteritems():
-        for j, centroid_j in centroids.iteritems():
-            if i != j and (j, i) not in connections:
+    for i, loc1 in dc_locations.iterrows():
+        for j, loc2 in dc_locations.iterrows():
+            if i < j:  # each pair is considered only once
                 ax.plot(
-                    [centroid_i.x, centroid_j.x],
-                    [centroid_i.y, centroid_j.y],
+                    [loc1["x"], loc2["x"]],
+                    [loc1["y"], loc2["y"]],
                     color="darkblue",
-                    linewidth=1.5,
-                    alpha=1,
                     linestyle="dotted",
+                    alpha=0.8,
                     transform=ccrs.Geodetic(),
+                    zorder=4,
+                    linewidth=2,    
                 )
-                connections.add((i, j))
-        ax.scatter(
-            centroid_i.x,
-            centroid_i.y,
-            color="darkblue",
-            marker="o",
-            s=50,
-            transform=ccrs.PlateCarree(),
-        )
+
+    # Customize the plot
+    plt.legend(loc="lower left")
 
     fig.tight_layout()
     fig.savefig(
-        snakemake.output.plot_DC, bbox_inches="tight", facecolor="white", dpi=600
+        snakemake.output.plot_DC,
+        facecolor="white",
+        dpi=600,
     )
 
 
@@ -362,14 +336,14 @@ if __name__ == "__main__":
         snakemake.input = Dict()
         snakemake.output = Dict()
 
-    images = "../study/images"
+    images = "../manuscript/img"
     results = "../results/" + snakemake["config"]["run"]
-
+    distance = snakemake["config"]["scenario"]["distance"][0]
     # snakemake.input.data = f"{folder}/networks/{scenario}/ref.csv"
     snakemake.output.plot = f"{images}/map-fleet.png"
-    snakemake.output.plot_DC = f"{images}/map-DCs.png"
+    snakemake.output.plot_DC = f"{images}/map-DCs.pdf"
     original_network = f"../input/v6_elec_s_37_lv1.0__1H-B-solar+p3_2025.nc"
-    stripped_network = f"{results}/networks/2025/EU/p1/cfe100/0.nc"
+    stripped_network = f"{results}/networks/2025/p1/cfe100/{distance}/0.nc"
 
     n = pypsa.Network(stripped_network)
 
@@ -393,8 +367,10 @@ rename = {
     "urban central solid biomass CHP": "solid biomass",
 }
 
-datacenters = snakemake["config"]["ci"]["datacenters"]
-
 plot_map(network=n, datacenters=list(datacenters.values()), bus_size_factor=4e4)
 
-plot_datacenters(network=n, datacenters=list(datacenters.values()))
+##############
+
+datacenters = snakemake["config"]["ci"][f"{distance}"]["datacenters"]
+
+plot_datacenters_on_europe_map(network=n, datacenters=datacenters)
