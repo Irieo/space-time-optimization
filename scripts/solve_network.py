@@ -872,6 +872,7 @@ def revert_links(n: pypsa.Network) -> None:
 def strip_full_network(n, config) -> None:
     """
     Removes all components but for datacenters and their connections.
+    Energy systems of background regions kept but load is removed for optimisation speed.
 
     It can only be used if CFE score == 100 runs AND exports of excess are not allowed.
 
@@ -881,7 +882,7 @@ def strip_full_network(n, config) -> None:
     Returns:
     - None
     """
-    nodes_to_keep = list(datacenters.values())
+    nodes_to_keep = list(datacenters.values()) + list(datacenters.keys())
 
     new_nodes = [f"{b} {s}" for b in nodes_to_keep for s in ["battery"]]
 
@@ -890,13 +891,23 @@ def strip_full_network(n, config) -> None:
     n.mremove("Bus", n.buses.index.symmetric_difference(nodes_to_keep))
 
     # keep only DC links
-    carrier_to_keep = config["carrier_to_keep"] + ["virtual_link", "dsm"]
+    carrier_to_keep = config["carrier_to_keep"] + ["AC", "virtual_link", "dsm"]
 
     for c in n.iterate_components(["Generator", "Store", "StorageUnit", "Load"]):
         location_boolean = c.df.bus.isin(nodes_to_keep)
         to_keep = c.df.index[location_boolean & c.df.carrier.isin(carrier_to_keep)]
         to_drop = c.df.index.symmetric_difference(to_keep)
         n.mremove(c.name, to_drop)
+
+    for c in n.iterate_components(["Link", "Line"]):
+        location_boolean = c.df.bus0.isin(nodes_to_keep) & c.df.bus1.isin(nodes_to_keep)
+        to_keep = c.df.index[location_boolean]
+        to_drop = c.df.index.symmetric_difference(to_keep)
+        n.mremove(c.name, to_drop)
+
+    # remove load from background systems for optimisation speed
+    datacenter_keys_list = list(datacenters.keys())
+    n.loads_t.p_set[datacenter_keys_list] = 0
 
 
 def calculate_grid_cfe(n, name: str, node: str, config) -> pd.Series:
