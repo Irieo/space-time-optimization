@@ -72,3 +72,6 @@ gurobi.log
 *.synctex.gz
 *.synctex.gz(busy)
 *.pdfsync
+
+scripts/playground-analysis.ipynb
+scripts/selected_heatmaps.ipynb
