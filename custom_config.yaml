@@ -1,0 +1,246 @@
+scenario:
+  distance: [DEDEIR, DEDENE, DEDEGE, DEDEPO, DEDELA, DEDEGR, DEDEPO, DEIRNE, DEGEIR,
+    DEIRPO, DEIRLA, DEGRIR, DEIRPO, DEGENE, DENEPO, DELANE, DEGRNE, DENEPO, DEGEPO,
+    DEGELA, DEGEGR, DEGEPO, DELAPO, DEGRPO, DEPOPO, DEGRLA, DELAPO, DEGRPO, DEIRNE,
+    DEGEIR, DEIRPO, DEIRLA, DEGRIR, DEIRPO, DEGENE, DENEPO, DELANE, DEGRNE, DENEPO,
+    DEGEPO, DEGELA, DEGEGR, DEGEPO, DELAPO, DEGRPO, DEPOPO, DEGRLA, DELAPO, DEGRPO,
+    GEIRNE, IRNEPO, IRLANE, GRIRNE, IRNEPO, GEIRPO, GEIRLA, GEGRIR, GEIRPO, IRLAPO,
+    GRIRPO, IRPOPO, GRIRLA, IRLAPO, GRIRPO, GENEPO, GELANE, GEGRNE, GENEPO, LANEPO,
+    GRNEPO, NEPOPO, GRLANE, LANEPO, GRNEPO, GELAPO, GEGRPO, GEPOPO, GEGRLA, GELAPO,
+    GEGRPO, GRLAPO, LAPOPO, GRPOPO, GRLAPO]
+ci:
+  DEDEIR:
+    datacenters:
+      DK1 0: Denmark-West
+      DK2 0: Denmark-East
+      IE5 0: Ireland
+  DEDENE:
+    datacenters:
+      DK1 0: Denmark-West
+      DK2 0: Denmark-East
+      NL1 0: Netherlands
+  DEDEGE:
+    datacenters:
+      DK1 0: Denmark-West
+      DK2 0: Denmark-East
+      DE1 0: Germany
+  DEDEPO:
+    datacenters:
+      DK1 0: Denmark-West
+      DK2 0: Denmark-East
+      PT1 0: Portugal
+  DEDELA:
+    datacenters:
+      DK1 0: Denmark-West
+      DK2 0: Denmark-East
+      LV6 0: Latvia
+  DEDEGR:
+    datacenters:
+      DK1 0: Denmark-West
+      DK2 0: Denmark-East
+      GR1 0: Greece
+  DEIRNE:
+    datacenters:
+      DK2 0: Denmark-East
+      IE5 0: Ireland
+      NL1 0: Netherlands
+  DEGEIR:
+    datacenters:
+      DK2 0: Denmark-East
+      IE5 0: Ireland
+      DE1 0: Germany
+  DEIRPO:
+    datacenters:
+      DK2 0: Denmark-East
+      IE5 0: Ireland
+      PT1 0: Portugal
+  DEIRLA:
+    datacenters:
+      DK2 0: Denmark-East
+      IE5 0: Ireland
+      LV6 0: Latvia
+  DEGRIR:
+    datacenters:
+      DK2 0: Denmark-East
+      IE5 0: Ireland
+      GR1 0: Greece
+  DEGENE:
+    datacenters:
+      DK2 0: Denmark-East
+      NL1 0: Netherlands
+      DE1 0: Germany
+  DENEPO:
+    datacenters:
+      DK2 0: Denmark-East
+      NL1 0: Netherlands
+      PT1 0: Portugal
+  DELANE:
+    datacenters:
+      DK2 0: Denmark-East
+      NL1 0: Netherlands
+      LV6 0: Latvia
+  DEGRNE:
+    datacenters:
+      DK2 0: Denmark-East
+      NL1 0: Netherlands
+      GR1 0: Greece
+  DEGEPO:
+    datacenters:
+      DK2 0: Denmark-East
+      DE1 0: Germany
+      PT1 0: Portugal
+  DEGELA:
+    datacenters:
+      DK2 0: Denmark-East
+      DE1 0: Germany
+      LV6 0: Latvia
+  DEGEGR:
+    datacenters:
+      DK2 0: Denmark-East
+      DE1 0: Germany
+      GR1 0: Greece
+  DELAPO:
+    datacenters:
+      DK2 0: Denmark-East
+      LV6 0: Latvia
+      PT1 0: Portugal
+  DEGRPO:
+    datacenters:
+      DK2 0: Denmark-East
+      GR1 0: Greece
+      PT1 0: Portugal
+  DEPOPO:
+    datacenters:
+      DK2 0: Denmark-East
+      PL1 0: Poland
+      PT1 0: Portugal
+  DEGRLA:
+    datacenters:
+      DK2 0: Denmark-East
+      LV6 0: Latvia
+      GR1 0: Greece
+  GEIRNE:
+    datacenters:
+      IE5 0: Ireland
+      NL1 0: Netherlands
+      DE1 0: Germany
+  IRNEPO:
+    datacenters:
+      IE5 0: Ireland
+      NL1 0: Netherlands
+      PT1 0: Portugal
+  IRLANE:
+    datacenters:
+      IE5 0: Ireland
+      NL1 0: Netherlands
+      LV6 0: Latvia
+  GRIRNE:
+    datacenters:
+      IE5 0: Ireland
+      NL1 0: Netherlands
+      GR1 0: Greece
+  GEIRPO:
+    datacenters:
+      IE5 0: Ireland
+      DE1 0: Germany
+      PT1 0: Portugal
+  GEIRLA:
+    datacenters:
+      IE5 0: Ireland
+      DE1 0: Germany
+      LV6 0: Latvia
+  GEGRIR:
+    datacenters:
+      IE5 0: Ireland
+      DE1 0: Germany
+      GR1 0: Greece
+  IRLAPO:
+    datacenters:
+      IE5 0: Ireland
+      LV6 0: Latvia
+      PT1 0: Portugal
+  GRIRPO:
+    datacenters:
+      IE5 0: Ireland
+      GR1 0: Greece
+      PT1 0: Portugal
+  IRPOPO:
+    datacenters:
+      IE5 0: Ireland
+      PL1 0: Poland
+      PT1 0: Portugal
+  GRIRLA:
+    datacenters:
+      IE5 0: Ireland
+      LV6 0: Latvia
+      GR1 0: Greece
+  GENEPO:
+    datacenters:
+      NL1 0: Netherlands
+      DE1 0: Germany
+      PT1 0: Portugal
+  GELANE:
+    datacenters:
+      NL1 0: Netherlands
+      DE1 0: Germany
+      LV6 0: Latvia
+  GEGRNE:
+    datacenters:
+      NL1 0: Netherlands
+      DE1 0: Germany
+      GR1 0: Greece
+  LANEPO:
+    datacenters:
+      NL1 0: Netherlands
+      LV6 0: Latvia
+      PT1 0: Portugal
+  GRNEPO:
+    datacenters:
+      NL1 0: Netherlands
+      GR1 0: Greece
+      PT1 0: Portugal
+  NEPOPO:
+    datacenters:
+      NL1 0: Netherlands
+      PL1 0: Poland
+      PT1 0: Portugal
+  GRLANE:
+    datacenters:
+      NL1 0: Netherlands
+      LV6 0: Latvia
+      GR1 0: Greece
+  GELAPO:
+    datacenters:
+      DE1 0: Germany
+      LV6 0: Latvia
+      PT1 0: Portugal
+  GEGRPO:
+    datacenters:
+      DE1 0: Germany
+      GR1 0: Greece
+      PT1 0: Portugal
+  GEPOPO:
+    datacenters:
+      DE1 0: Germany
+      PL1 0: Poland
+      PT1 0: Portugal
+  GEGRLA:
+    datacenters:
+      DE1 0: Germany
+      LV6 0: Latvia
+      GR1 0: Greece
+  GRLAPO:
+    datacenters:
+      LV6 0: Latvia
+      GR1 0: Greece
+      PT1 0: Portugal
+  LAPOPO:
+    datacenters:
+      PL1 0: Poland
+      LV6 0: Latvia
+      PT1 0: Portugal
+  GRPOPO:
+    datacenters:
+      PL1 0: Poland
+      GR1 0: Greece
+      PT1 0: Portugal
