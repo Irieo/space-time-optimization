@@ -532,10 +532,14 @@ def summarise_network(n, policy, tech_palette):
             {
                 "ci_capital_cost_grid": 0,
                 "ci_marginal_cost_grid": (
-                    n.links_t.p0[name + " import"]
-                    * weights
-                    * n.buses_t.marginal_price[location]
-                ).sum(),
+                    0
+                    if snakemake.config["strip_full_network"]
+                    else (
+                        n.links_t.p0[name + " import"]
+                        * weights
+                        * n.buses_t.marginal_price[location]
+                    ).sum()
+                ),
             }
         )
 
@@ -551,10 +555,14 @@ def summarise_network(n, policy, tech_palette):
         total_cost += results[location]["ci_cost_grid"]
 
         ci_revenue_grid = (
-            n.links_t.p0[name + " export"]
-            * weights
-            * n.buses_t.marginal_price[location]
-        ).sum()
+            0
+            if snakemake.config["strip_full_network"]
+            else (
+                n.links_t.p0[name + " export"]
+                * weights
+                * n.buses_t.marginal_price[location]
+            ).sum()
+        )
 
         results[location].update(
             {
@@ -583,14 +591,22 @@ def summarise_network(n, policy, tech_palette):
             total_cost / results[location]["ci_demand_total"]
         )
 
-        # 7: Other calculations
         results[location].update(
             {
-                "zone_average_marginal_price": n.buses_t.marginal_price[location].sum()
-                / len(n.snapshots),
-                "emissions": n.stores_t.e["co2 atmosphere"][-1],
-                "system_grid_cfe_wavg": weighted_avg(
-                    grid_cfe, n.loads_t.p[grid_loads].sum(axis=1)
+                "zone_average_marginal_price": (
+                    0
+                    if snakemake.config["strip_full_network"]
+                    else n.buses_t.marginal_price[location].sum() / len(n.snapshots)
+                ),
+                "emissions": (
+                    0
+                    if snakemake.config["strip_full_network"]
+                    else n.stores_t.e["co2 atmosphere"][-1]
+                ),
+                "system_grid_cfe_wavg": (
+                    0
+                    if snakemake.config["strip_full_network"]
+                    else weighted_avg(grid_cfe, n.loads_t.p[grid_loads].sum(axis=1))
                 ),
             }
         )
@@ -653,7 +669,7 @@ if __name__ == "__main__":
             year="2025",
             palette="p1",
             policy="cfe100",
-            distance="far",
+            distance="DKGRPT",
             flexibility="40",
         )
 

@@ -31,7 +31,8 @@ technology_data:
 run: DKDEPT-1H-allflex-noexcess-nocostshifts-manysteps # name of the run
 
 # modelled region
-zone: "DKDEPT" #37-node network of ENTSO-E area | possible toy zones: "IE", "DE", "IEDK", "DKDE"
+
+strip_full_network: True # if True, only datacenters and their connections are kept in the network
 
 #wildcards
 scenario:

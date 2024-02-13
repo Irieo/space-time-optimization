@@ -869,6 +869,36 @@ def revert_links(n: pypsa.Network) -> None:
     ] = 1
 
 
+def strip_full_network(n, config) -> None:
+    """
+    Removes all components but for datacenters and their connections.
+
+    It can only be used if CFE score == 100 runs AND exports of excess are not allowed.
+
+    Args:
+    - n (pypsa.Network): The network object to be stripped.
+
+    Returns:
+    - None
+    """
+    nodes_to_keep = list(datacenters.values())
+
+    new_nodes = [f"{b} {s}" for b in nodes_to_keep for s in ["battery"]]
+
+    nodes_to_keep.extend(new_nodes)
+
+    n.mremove("Bus", n.buses.index.symmetric_difference(nodes_to_keep))
+
+    # keep only DC links
+    carrier_to_keep = config["carrier_to_keep"] + ["virtual_link", "dsm"]
+
+    for c in n.iterate_components(["Generator", "Store", "StorageUnit", "Load"]):
+        location_boolean = c.df.bus.isin(nodes_to_keep)
+        to_keep = c.df.index[location_boolean & c.df.carrier.isin(carrier_to_keep)]
+        to_drop = c.df.index.symmetric_difference(to_keep)
+        n.mremove(c.name, to_drop)
+
+
 def calculate_grid_cfe(n, name: str, node: str, config) -> pd.Series:
     """
     Calculates the time-series of grid supply CFE score for each C&I consumer.
@@ -1374,7 +1404,7 @@ if __name__ == "__main__":
             year="2025",
             palette="p1",
             policy="cfe100",
-            distance="DKDEFR",
+            distance="DKGRPT",
             flexibility="40",
         )
 
@@ -1443,6 +1473,8 @@ if __name__ == "__main__":
         add_vl(n, names) if config["ci"]["spatial_shifting"] else None
         add_dsm(n) if config["ci"]["temporal_shifting"] else None
         revert_links(n)
+
+        strip_full_network(n, config) if config["strip_full_network"] else None
 
         solve_network(
             n=n,
