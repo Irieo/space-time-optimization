@@ -56,6 +56,12 @@ ci:
     datacenters: {"IE5 0": "Ireland"}
   IEDK:
     datacenters: {"IE5 0": "Ireland", "DK1 0": "Denmark"}
+  IEGB:
+    datacenters: {"IE5 0": "Ireland", "GB1 0": "Great Britain"}
+  IENL:
+    datacenters: {"IE5 0": "Ireland", "NL1 0": "Netherlands"}
+  IENI:
+    datacenters: {"IE5 0": "Ireland", "NI1 0": "Northern Ireland"}
   DKGRPT:
     datacenters: {"DK1 0": "Denmark", "GR1 0": "Greece", "PT1 0": "Portugal"}
   DKDEPT:
