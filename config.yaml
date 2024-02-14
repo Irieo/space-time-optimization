@@ -24,20 +24,21 @@ retrieve_cost_data: True
 technology_data:
   year: 2025
   version: v0.6.2
-  
+
 ###################
 # Scenario controls
 
-run: DKDEPT-1H-allflex-noexcess-nocostshifts-manysteps # name of the run
+run: testrun
 
 # modelled region
+zone: "EU" #37-node network of ENTSO-E area | possible toy zones: "IE", "DE", "IEDK", "DKDE"
 
 strip_full_network: True # if True, only datacenters and their connections are kept in the network
 
 #wildcards
 scenario:
   flexibility: ["0", "10", "20", "30", "40"] # possible deviation of requested load from nominal level [percentage of nominal load]
-  distance: ['DKDEPT'] # list of datacenter locations
+  distance: ["DKDEPT"] # list of datacenter locations
   policy:  ["cfe100"] # "ref", "res100", "cfe..", "cfe100"
   palette: [
              "p1", # onwind + solar + battery
@@ -53,55 +54,19 @@ scenario:
 ci:
   IEIE:
     datacenters: {"IE5 0": "Ireland"}
-  IENI:
-    datacenters: {"IE5 0": "Ireland", "GB5 0": "Northern Ireland"}
-  IEGB:
-    datacenters: {"IE5 0": "Ireland", "GB0 0": "Great Britain"}
-  IENL: 
-    datacenters: {"IE5 0": "Ireland", "NL1 0": "Netherlands"}  
   IEDK:
     datacenters: {"IE5 0": "Ireland", "DK1 0": "Denmark"}
-  DKDEFR:
-    datacenters: {"DK1 0": "Denmark", "DE1 0": "Germany", "FR1 0": "France"}
-  DKDEES:
-    datacenters: {"DK1 0": "Denmark", "DE1 0": "Germany", "ES1 0": "Spain"}
-  DKPLES:
-    datacenters: {"DK1 0": "Denmark", "PL1 0": "Poland", "ES1 0": "Spain"}
-  DKATES:
-    datacenters: {"DK1 0": "Denmark", "AT1 0": "Austria", "ES1 0": "Spain"}
-  DKBEES:
-    datacenters: {"DK1 0": "Denmark", "BE1 0": "Belgium", "ES1 0": "Spain"}
-  DKLTES:
-    datacenters: {"DK1 0": "Denmark", "LT6 0": "Lithuania", "ES1 0": "Spain"}
-  DKLTPT:
-    datacenters: {"DK1 0": "Denmark", "LT6 0": "Lithuania", "PT1 0": "Portugal"}
-  DKLVPT:
-    datacenters: {"DK1 0": "Denmark", "LV6 0": "Latvia", "PT1 0": "Portugal"}
   DKGRPT:
     datacenters: {"DK1 0": "Denmark", "GR1 0": "Greece", "PT1 0": "Portugal"}
-  GRPT: 
-    datacenters: {"GR1 0": "Greece", "PT1 0": "Portugal"}
-  DKFRDE:
-    datacenters: {"DK1 0": "Denmark", "FR1 0": "France", "DE1 0": "Germany"}
-  DKFRGB:
-    datacenters: {"DK1 0": "Denmark", "FR1 0": "France", "GB0 0": "UK"}
-  DKGBIE:
-    datacenters: {"DK1 0": "Denmark", "GB0 0": "UK", "IE5 0": "Ireland"}
-  IEDKEE:
-    datacenters: {"IE5 0": "Ireland", "DK1 0": "Denmark", "EE6 0": "Estonia"}
   DKDEPT:
     datacenters: {"DK1 0": "Denmark", "DE1 0": "Germany", "PT1 0": "Portugal"}
-  DKIEPT:
-    datacenters: {"DK1 0": "Denmark", "IE5 0": "Ireland", "PT1 0": "Portugal"}
-  DKPLPT:
-    datacenters: {"DK1 0": "Denmark", "PL1 0": "Poland", "PT1 0": "Portugal"}
   profile_shape: "baseload" #"baseload", "datacenter", "industry"
   load: 100. # nominal load in MW
   res_techs: ["onwind","solar"]
   excess_share: 0.0
   spatial_shifting: True #turns on/off spatial flexibiilty  (aka virtual links)
   temporal_shifting: True #turns on/off temporal flexibiilty (aka DSM)
-  netshift_zero: False #turns on/off netshift zero constraint 
+  netshift_zero: False #turns on/off netshift zero constraint
 
 ###################
 # Time-series management
@@ -157,19 +122,19 @@ costs:
   price_green_hydrogen: 3 #EUR/kg
   price_lignite: 6.5 # EUR/MWhth from TYNDP2020 -> default is 2.9
   price_coal: 8.9 # EUR/MWhth from TYNDP2020 -> default is 8.15
-  price_gas: 35 # EUR/MWhth -> https://energy.ec.europa.eu/system/files/2022-05/SWD_2022_230_1_EN_autre_document_travail_service_part1_v3.pdf
+  price_gas: 35 # EUR/MWhth
   adv_geo_overnight_2025: 10000 # 2022$/kW CAPEX
   adv_geo_overnight_2030: 10000  # 2022$/kW CAPEX
   allam_ccs_overnight_2025: 2760 # 2022$/kW CAPEX, 2300*1.2
   allam_ccs_overnight_2030: 2600 # 2022$/kW CAPEX, 2300*1.2 (!)
 
 
-#~size of C&I electricity load per country https://ec.europa.eu/eurostat/databrowser/view/ten00129/default/table?lang=en
-ci_load:
-  IE: 2200.
-  DK: 2240.
-  DE: 38410.
-  NL: 8140.
+# size of C&I electricity load per country https://ec.europa.eu/eurostat/databrowser/view/ten00129/default/table?lang=en
+# ci_load:
+#   IE: 2200.
+#   DK: 2240.
+#   DE: 38410.
+#   NL: 8140.
 
 
 # nuclear phase-out policies (FR and BE shifted plan to 2035)
@@ -219,7 +184,7 @@ res_target_2030:
 solving:
 
   options:
-    n_iterations: 1  #iterations with CFE factor
+    n_iterations: 1  #iterations with CFE factor, deafault value is 2
 
   solver:
     name: gurobi

@@ -7,7 +7,6 @@ scenario:
   - DKIEPT
   - DKFRIE
   - DEDKNL
-  - DKLVNL
   - DKGRNL
   - DKNLPT
   - DKFRNL
@@ -92,11 +91,6 @@ ci:
       DK1 0: Denmark
       NL1 0: Netherlands
       DE1 0: Germany
-  DKLVNL:
-    datacenters:
-      DK1 0: Denmark
-      NL1 0: Netherlands
-      LV6 0: Latvia
   DKGRNL:
     datacenters:
       DK1 0: Denmark

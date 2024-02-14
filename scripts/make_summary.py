@@ -53,7 +53,7 @@ if __name__ == "__main__":
             year="2025",
             palette="p1",
             policy="cfe100",
-            distance="far",
+            distance="DKGRPT",
         )
 
     # When running via snakemake
@@ -63,5 +63,8 @@ if __name__ == "__main__":
     policy = snakemake.wildcards.policy
     distance = snakemake.wildcards.distance
     datacenters = snakemake.config["ci"][f"{distance}"]["datacenters"]
+
+    # with open("../custom_config.yaml", "r") as f:
+    #     datacenters = yaml.safe_load(f)["ci"][f"{distance}"]["datacenters"]
 
     make_summary()
