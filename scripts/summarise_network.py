@@ -454,72 +454,71 @@ def summarise_network(n, policy, tech_palette):
             }
         )
 
-        system_links = n.links[n.links.index.str.contains("|".join(exp_links))]
-        results[location].update(
-            {
-                f"system_inv_{link}": (
-                    system_links.loc[
-                        system_links.index.str.contains(link), "p_nom_opt"
-                    ].sum()
-                    - system_links.loc[
-                        system_links.index.str.contains(link), "p_nom"
-                    ].sum()
-                )
-                * system_links.loc[
-                    system_links.index.str.contains(link), "efficiency"
-                ].iloc[0]
-                for link in exp_links
-            }
-        )
-
-        # Chargers & Dischargers
-        HV_links = n.links.drop(
-            n.links[n.links.index.str.contains("home battery")].index
-        )
-        system_chargers = HV_links[
-            HV_links.index.str.contains(
-                f"battery charger-{year}|H2 Electrolysis-{year}"
+        if snakemake.config["strip_full_network"] == False:
+            system_links = n.links[n.links.index.str.contains("|".join(exp_links))]
+            results[location].update(
+                {
+                    f"system_inv_{link}": (
+                        system_links.loc[
+                            system_links.index.str.contains(link), "p_nom_opt"
+                        ].sum()
+                        - system_links.loc[
+                            system_links.index.str.contains(link), "p_nom"
+                        ].sum()
+                    )
+                    for link in exp_links
+                }
             )
-        ]
-        system_dischargers = HV_links[
-            HV_links.index.str.contains(
-                f"battery discharger-{year}|H2 Fuel Cell-{year}"
+
+            # Chargers & Dischargers
+            HV_links = n.links.drop(
+                n.links[n.links.index.str.contains("home battery")].index
             )
-        ]
-
-        results[location].update(
-            {
-                f"system_inv_{charger.replace(' ', '_')}": (
-                    system_chargers.loc[
-                        system_chargers.index.str.contains(charger), "p_nom_opt"
-                    ].sum()
-                    - system_chargers.loc[
-                        system_chargers.index.str.contains(charger), "p_nom"
-                    ].sum()
+            system_chargers = HV_links[
+                HV_links.index.str.contains(
+                    f"battery charger-{year}|H2 Electrolysis-{year}"
                 )
-                * system_chargers.loc[
-                    system_chargers.index.str.contains(charger), "efficiency"
-                ].iloc[0]
-                for charger in exp_chargers
-            }
-        )
-
-        results[location].update(
-            {
-                f"system_inv_{discharger.replace(' ', '_')}": (
-                    system_dischargers.loc[
-                        system_dischargers.index.str.contains(discharger), "p_nom_opt"
-                    ].sum()
-                    - system_dischargers.loc[
-                        system_dischargers.index.str.contains(discharger), "p_nom"
-                    ].sum()
+            ]
+            system_dischargers = HV_links[
+                HV_links.index.str.contains(
+                    f"battery discharger-{year}|H2 Fuel Cell-{year}"
                 )
-                * system_dischargers.loc[
-                    system_dischargers.index.str.contains(discharger), "efficiency"
-                ].iloc[0]
-                for discharger in exp_dischargers
-            }
-        )
+            ]
+
+            results[location].update(
+                {
+                    f"system_inv_{charger.replace(' ', '_')}": (
+                        system_chargers.loc[
+                            system_chargers.index.str.contains(charger), "p_nom_opt"
+                        ].sum()
+                        - system_chargers.loc[
+                            system_chargers.index.str.contains(charger), "p_nom"
+                        ].sum()
+                    )
+                    * system_chargers.loc[
+                        system_chargers.index.str.contains(charger), "efficiency"
+                    ].iloc[0]
+                    for charger in exp_chargers
+                }
+            )
+
+            results[location].update(
+                {
+                    f"system_inv_{discharger.replace(' ', '_')}": (
+                        system_dischargers.loc[
+                            system_dischargers.index.str.contains(discharger),
+                            "p_nom_opt",
+                        ].sum()
+                        - system_dischargers.loc[
+                            system_dischargers.index.str.contains(discharger), "p_nom"
+                        ].sum()
+                    )
+                    * system_dischargers.loc[
+                        system_dischargers.index.str.contains(discharger), "efficiency"
+                    ].iloc[0]
+                    for discharger in exp_dischargers
+                }
+            )
 
         # 6: Storing costs at CI node
         total_cost = 0.0
@@ -669,7 +668,7 @@ if __name__ == "__main__":
             year="2025",
             palette="p1",
             policy="cfe100",
-            distance="DKGRPT",
+            distance="DEPOPO",
             flexibility="40",
         )
 
