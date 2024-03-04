@@ -2,24 +2,24 @@
 %
 % SPDX-License-Identifier: CC-BY-4.0
 
-\subsection{Methods and tools} 
+\subsection{Methods and tools}
 
 The simulations were carried out with the open-source software PyPSA for energy system modelling \cite{horschPyPSAEurOpenOptimisation2018} and Linopy for optimization \cite{LinopyLinearOptimization2024}.
-The mathematical model is a system-wide cost-minimisation problem. 
+The mathematical model is a system-wide cost-minimisation problem.
 The objective of the model is to co-optimise (i) investment and dispatch decisions of generation and storage assets done by datacenters to meet their electricity demand in line with 24/7 CFE objectives, (ii) space-time load-shifting decisions subject to datacenter flexibility constraints, as well as (iii) investment and dispatch decisions of assets in the rest of the European electricity system to meet the demand of other consumers.
-The model formulation includes the the linear optimal power flow approximation on the transmission network. 
-This work uses a brownfield investment approach, which means that the model includes information about the existing assets of the European electricity system. 
+The model formulation includes the the linear optimal power flow approximation on the transmission network.
+This work uses a brownfield investment approach, which means that the model includes information about the existing assets of the European electricity system.
 
-The electricity system dispatch and investment problem of this type is a standard in the energy modelling literature \cite{OpenModelsWikib}, the clean computing model is based on the framework of 24/7 CFE accounting suggested by Google \cite{google-methodologies} that was implemented in realms of energy system models by Xu et al. \cite{xu-247CFE-report} and Riepin \& Brown \cite{riepinMeansCostsSystemlevel2023}, and the space-time load flexibility model is inspired by the work of Zhang et al. \cite{zhangRemuneratingSpaceTime2022} The space-time load flexibility as a degree of freedom within the 24/7 CFE matching problem is a novel contribution of this work.
+The electricity system dispatch and investment problem of this type is a standard in the energy modelling literature \cite{OpenModelsWikib}. The clean computing model is based on the framework of 24/7 CFE accounting suggested by Google \cite{google-methodologies} that was implemented in realms of energy system models by Xu et al. \cite{xu-247CFE-report} and Riepin \& Brown \cite{riepinMeansCostsSystemlevel2023}. The space-time load flexibility model is inspired by the work of Zhang et al. \cite{zhangRemuneratingSpaceTime2022}. Finally, the space-time load flexibility as a degree of freedom within the 24/7 CFE matching problem is a novel contribution of this work.
 
 
-\subsection{Datacenter model} 
+\subsection{Datacenter model}
 
 Datacenters are represented as a subset of demand nodes for electricity with a fixed demand profile, controlled degree of flexibility, and a set of specific constraints ensuring the carbon-free energy matching and utilisation of flexibility in a feasible domain.
 
-% 24/7 CFE 
+% 24/7 CFE
 
-The 24/7 CFE matching problem introduces a set of new model components (parameters, variables, constraints) into the power system optimisation problem to represent voluntary yet binding carbon-free energy matching commitments. Here, we model a situation where one company operating a network of datacenters that are geographically distributed but managed collectively. The company is committed to match every kilowatt-hour of electricity consumption by carbon-free sources in all datacenter locations. To achieve the target, the company optimises its procurement of carbon-free generation and storage resources and operational decisions, such as dispatch of procured assets, load-shifting flexibility use, imports of electricity from the regional grid, and when necessary, curtailment of excess generation.
+The 24/7 CFE matching problem introduces a set of new model components (parameters, variables, constraints) into the power system optimisation problem to represent voluntary yet binding carbon-free energy matching commitments. Here, we model a situation where one company operates a network of datacenters that are geographically distributed but managed collectively. The company is committed to match every kilowatt-hour of electricity consumption by carbon-free sources in all datacenter locations. To achieve the target, the company optimises its procurement of carbon-free generation and storage resources and operational decisions, such as dispatch of procured assets, load-shifting flexibility use, imports of electricity from the regional grid, and when necessary, curtailment of excess generation.
 
 \textbf{A single datacenter with an inflexible load --} First, consider a case of a single datacenter with demand profile $d_{t}$ for each hour $t$ of the year. The demand profile is assumed to be known in advance and is not flexible. In such case, energy balance constraint requires that hourly demand is met by a combination of the following: (i) dispatch $g_{r,t}$ of procured carbon-free generators $r\in CFE$, (ii) dispatch $\bar{g}_{s,t}$ of procured storage technologies $s\in STO$, and (iii) imports of electricity from the regional grid $im_{t}$:
 \begin{equation}
@@ -29,7 +29,7 @@ The 24/7 CFE matching problem introduces a set of new model components (paramete
 \label{eqn:inflexnb}
 \end{equation}
 
-Note that if total electricity yield of renewable generators procured by datacenter operator exceeds demand in a given hour, the excess electricity $ex_t$ has to be either stored or curtailed.\footnote{In practice, excess electricity can also be sold to the regional electricity market at wholesale market prices. This option is deliberately avoided in this work.}
+Note that if total electricity yield of renewable generators procured by the datacenter operator exceeds demand in a given hour, the excess electricity $ex_t$ has to be either stored or curtailed.\footnote{In practice, excess electricity can also be sold to the regional electricity market at wholesale market prices. This option is deliberately avoided in this work.}
 
 The 24/7 CFE matching constraint requires that sum over hourly generation from the contracted generators, plus net dispatch of the storage technologies, plus imports of electricity from the regional grid multiplied by the grid's hourly CFE factor $CFE_t$ minus the excess electricity must be higher or equal than a certain CFE score $x$ multiplied by the total load of a datacenter:
 \begin{equation}
@@ -41,35 +41,35 @@ The 24/7 CFE matching constraint requires that sum over hourly generation from t
 \end{equation}
 
 % On CFE target
-\noindent where \textit{CFE score} $x$[\%] measures the degree to which hourly electricity consumption is matched with carbon-free electricity generation. \cite{google-methodologies} Thus, equation (\ref{eqn:CFE}) allows for controlling \textit{the quality score} of the 24/7~CFE procurement by adjusting the parameter $x$, which was subject of research in recent literature. \cite{riepinMeansCostsSystemlevel2023,xu-247CFE-report} Here, we focus on the best quality score ($x=1$) ensuring that every kilowatt-hour of electricity consumption is met by carbon-free sources at all times.
+\noindent where \textit{CFE score} $x$[\%] measures the degree to which hourly electricity consumption is matched with carbon-free electricity generation \cite{google-methodologies}. Thus, equation (\ref{eqn:CFE}) allows for controlling \textit{the quality score} of the 24/7~CFE procurement by adjusting the parameter $x$, which was the subject of research in recent literature \cite{riepinMeansCostsSystemlevel2023,xu-247CFE-report}. Here, we focus on the best quality score ($x=1$) ensuring that every kilowatt-hour of electricity consumption is met by carbon-free sources at all times.
 
 Note the following properties of the 24/7 CFE matching problem:
 
 \begin{enumerate}
-    \item The contracted generators $r\in CFE$ must be additional to the system and can be sited only in the local bidding zone, known as requirements for \textit{additionality} and \textit{locational matching}.
+    \item The contracted generators $r\in CFE$ must be additional to the system and can be sited only in the local bidding zone, known as the requirements for \textit{additionality} and \textit{locational matching}.
     \item Excess electricity is not counted toward the CFE score and thus subtracted from the left-hand side of eq. (\ref{eqn:CFE}).
     \item The CFE factor of the regional grid ($CFE_t$) can be seen as the percentage of clean electricity in each MWh of imported electricity to supply demand of participating consumers in a given hour.
     To compute $CFE_t$, we consider both the hourly electricity mix in the local bidding zone and emission intensity of imported electricity from the neighbouring zones.
-    The numerical simulations show that for the perfect 24/7 CFE matching ($x=1$), datacenter operator does not rely on electricity imports from the regional grid because local electricity mix must have a strictly zero carbon content for imported electricity to be counted as \enquote{carbon-free}. 
-    Thus, datacenter operator has one less degree of freedom to meet the 24/7 CFE matching target.
-    The methodology to calculate the grid CFE factor and lineraise resulting nonconvexity is described in detail in the prior work of the authors \cite{riepin-zenodo-systemlevel247}.
+    The numerical simulations show that for the perfect 24/7 CFE matching ($x=1$), the datacenter operator does not rely on electricity imports from the regional grid because local electricity mix must have a strictly zero carbon content for imported electricity to be counted as \enquote{carbon-free}.
+    Thus, the datacenter operator has one less degree of freedom to meet the 24/7 CFE matching target.
+    The methodology to calculate the grid CFE factor and linearise resulting nonconvexity is described in detail in the prior work of the authors \cite{riepin-zenodo-systemlevel247}.
 \end{enumerate}
 
 \textbf{Multiple datacenters with flexible load --} Here we expand the 24/7 CFE matching problem to a case of multiple datacenters with flexible loads.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.95\columnwidth]{img/datacenter-problem.png}
+    \includegraphics[width=1\columnwidth]{img/datacenter-problem.png}
     \caption{Illustration of spatio-temporal load-shifting optimisation problem faced by a datacenter operator.}
     \label{fig:space-time-optimisation}
 \end{figure}
 
-Let us assume that a known number of computing jobs, and associated power loads are \enquote{flexible}, i.e., loads can potentially be shifted geographically across datacenter locations, or delayed to other times.\footnote{The amount of CPU usage on a cluster can be mapped accurately to electricity demand. \cite{radovanovicIEEE2023}} Thus, the \textit{dispatched load} $\widetilde{d}_t$ of a datacenter can deviate from the requested load $d_t$. The dispatched load $\widetilde{d}_t$ can take a value in a feasible domain that is constrained by a datacenter capacity (an upper limit) and the inflexible workloads volume (a lower limit), as illustrated in Figure \ref{fig:workloads}. The range of possible deviations between the dispatched and the requested loads is assumed to lie within a certain \textit{flexibility range} $f$~[\%], such as:
+Let us assume that a known number of computing jobs with their associated power demand are \enquote{flexible}, i.e., power demand can potentially be shifted geographically across datacenter locations, or delayed to other times.\footnote{The amount of CPU usage on a cluster can be mapped accurately to electricity demand \cite{radovanovicIEEE2023}.} Thus, the \textit{dispatched load} $\widetilde{d}_t$ of a datacenter can deviate from the requested load $d_t$. The dispatched load $\widetilde{d}_t$ can take a value in a feasible domain that is constrained by a datacenter capacity (an upper limit) and the inflexible workloads volume (a lower limit), as illustrated in Figure \ref{fig:workloads}. The range of possible deviations between the dispatched and the requested loads is assumed to lie within a certain \textit{flexibility range} $f$~[\%], such as:
 \begin{subequations}
   \begin{align}
-    [1-f] \cdot d_t \le  \widetilde{d}_t  \le [1+f] \cdot d_t \quad \forall t \in T  
+    [1-f] \cdot d_t \le  \widetilde{d}_t  \le [1+f] \cdot d_t \quad \forall t \in T
     \label{eqn:dcaps} \\
-    \widetilde{d}_t = d_t + (\overline{\Delta}_t - \underline{\Delta}_t) \quad \forall t \in T  
+    \widetilde{d}_t = d_t + (\overline{\Delta}_t - \underline{\Delta}_t) \quad \forall t \in T
     \label{eqn:dtilde}
   \end{align}
   \label{eqn:range}
@@ -78,14 +78,14 @@ Let us assume that a known number of computing jobs, and associated power loads 
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\columnwidth]{img/drawio_flexrange_d.jpg}
+    \includegraphics[width=1\columnwidth]{img/flexibility.pdf}
     \caption{Illustration of load flexibility concept: the absolute value of deviations between dispatched $\widetilde{d}_t$~[MW] and requested $d_t$~[MW] loads must fall within a certain flexibility range $f$~[\%] for each hour $t$.}
     \label{fig:workloads}
 \end{figure}
 
-% spatial shifting 
+% spatial shifting
 
-To incorporate spatial flexibility, we use a concept of \textit{virtual links} representing non-physical pathways for shifting power loads across datacenter locations. Assume we have a set of datacenters $N$ located in various locations of an electricity network. Let $\Theta$ be the set of all virtual links and let $\delta_\vartheta \in \mathbb{R}_{+}$ be the spatial load shifts (flows via virtual pathways). We can thus define $\Theta_n^{snd} := \{\vartheta \in \Theta | snd(\vartheta) = n\} \subseteq \Theta$ and $\Theta_n^{rec} := \{\vartheta \in \Theta | rec(\vartheta) = n\} \subseteq \Theta$ to be the set of sending and receiving virtual links for each datacenter $n \in N$. 
+To incorporate spatial flexibility, we use a concept of \textit{virtual links} representing non-physical pathways for shifting power loads across datacenter locations. Assume we have a set of datacenters $N$ located in various locations of an electricity network. Let $\Theta$ be the set of all virtual links and let $\delta_\vartheta \in \mathbb{R}_{+}$ be the spatial load shifts (flows via virtual pathways). We can thus define $\Theta_n^{snd} := \{\vartheta \in \Theta | snd(\vartheta) = n\} \subseteq \Theta$ and $\Theta_n^{rec} := \{\vartheta \in \Theta | rec(\vartheta) = n\} \subseteq \Theta$ to be the set of sending and receiving virtual links for each datacenter $n \in N$.
 
 % temporal shifting
 
@@ -93,17 +93,17 @@ To incorporate temporal flexibility, we use a concept of \textit{temporal load m
 
 % new nodal balance
 
-The nodal energy balance for inflexible consumers (eq.~\ref{eqn:inflexnb}) can now be extended by variables representing shifts of load \textit{in space} and \textit{in time}. Thus, the dispatched load  $\widetilde{d_{t}}$ of flexible consumer can deviate from the $d_{n,t}$ value due to space-time load shifting. 
+The nodal energy balance for inflexible consumers (eq.~\ref{eqn:inflexnb}) can now be extended by variables representing shifts of load \textit{in space} and \textit{in time}. Thus, the dispatched load  $\widetilde{d_{t}}$ of flexible consumer can deviate from the $d_{n,t}$ value due to space-time load shifting.
 \begin{equation}
     \begin{split}
     &\sum_{r\in CFE} g_{r,n,t} + \sum_{s\in STO} \left(\bar{g}_{s,n,t} - \ubar{g}_{s,n,t}\right) - ex_{n,t} + im_{n,t}  = \\
-    & d_{n,t} + \textcolor{purple}{\sum_{\vartheta \in \Theta_n^{rec}}\delta_{\vartheta, t} - \sum_{\vartheta \in \Theta_n^{snd}}\delta_{\vartheta, t} + \sum_{{s'} \in S_n^{dsm}} \left(\bar{g}_{s',n,t} - \ubar{g}_{s',n,t}\right)} \\ 
-    & \hspace{.5cm} \forall n \in N, t \in T 
+    & d_{n,t} + \textcolor{darkred}{\sum_{\vartheta \in \Theta_n^{rec}}\delta_{\vartheta, t} - \sum_{\vartheta \in \Theta_n^{snd}}\delta_{\vartheta, t} + \sum_{{s'} \in S_n^{dsm}} \left(\bar{g}_{s',n,t} - \ubar{g}_{s',n,t}\right)} \\
+    & \hspace{.5cm} \forall n \in N, t \in T
     \label{eqn:bothnb}
     \end{split}
 \end{equation}
 % computing capacity constraints
-Computing capacity constraints (eq.~\ref{eqn:bothflex}) ensure that the dispatched load at each datacenter  $\widetilde{d}_{n,t}$ falls within the feasible domain considering both spatial and temporal load shifting. Computing capacity limit sets an upper bould (eq. \ref{eqn:bothb}) and inflexible workloads share sets a lower bound (eq. \ref{eqn:bothc}).
+Computing capacity constraints (eq.~\ref{eqn:bothflex}) ensure that the dispatched load at each datacenter  $\widetilde{d}_{n,t}$ falls within the feasible domain considering both spatial and temporal load shifting. Computing capacity limit sets an upper bound (eq. \ref{eqn:bothb}) and inflexible workloads share sets a lower bound (eq. \ref{eqn:bothc}).
 \begin{subequations}
     \begin{align}
       \begin{split}
@@ -118,19 +118,40 @@ Computing capacity constraints (eq.~\ref{eqn:bothflex}) ensure that the dispatch
 \end{subequations}
 Note that spatial load shifts are not subject to any electricity network transmission constraints. As such, the only source of congestion for the virtual links is computing capacity constraints (i.e., availability of flexible workloads) as defined in eq. (\ref{eqn:bothflex}).
 
-Temporal load shifts have an additional constraint ensuring that the cluster-level compute usage is preserved within a certain time interval. We follow the work of Radovanovic et al. \cite{radovanovicIEEE2023} and implement a \textit{daily} compute usage conservation rule: 
+Temporal load shifts have an additional constraint ensuring that the cluster-level compute usage is preserved within a certain time interval. We follow the work of Radovanovic et al. \cite{radovanovicIEEE2023} and implement a \textit{daily} compute usage conservation rule:
 \begin{equation}
     \sum_{t | t \in t(DAYS)} \left(\bar{g}_{s',t} - \ubar{g}_{s',t}\right) = 0 \quad \forall {s'} \in S_n^{dsm}
     \label{eqn:dailyconserv2}
 \end{equation}
 % 24/7 CFE matching with flexible load
-Finally, the 24/7~CFE matching constraint defined in eq. \ref{eqn:CFE} can be defined over a set of datacenters nodes $N$ and extended on the right-hand side with variables representing spatial and temporal load shifts. The two additional degrees of freedom can be exploited to achieve hourly CFE matching targets more efficiently:
+Finally, the 24/7~CFE matching constraint defined in eq. \ref{eqn:CFE} can be defined over a set of datacenters nodes $N$ and extended on the right-hand side with variables representing spatial and temporal load shifts:
 
 \begin{align}
     &\sum_{r\in CFE, t\in T} g_{r,n,t} + \sum_{s\in STO, t\in T} (\bar{g}_{s,n,t} - \ubar{g}_{s,n,t}) \nonumber \\
     &- \sum_{t\in T} ex_{n,t} + \sum_{t\in T} CFE_{n,t} \cdot im_{n,t} \geq \nonumber \\
-    &x_n \cdot 
-        \Bigg( \sum_{t\in T} \Big( d_{n,t} + \textcolor{purple}{\sum_{\vartheta \in \Theta_n^{rec}}\delta_{\vartheta, t} - \sum_{\vartheta \in \Theta_n^{snd}}\delta_{\vartheta, t}} \nonumber \\
-        & \textcolor{purple}{+ \sum_{{s'} \in S_n^{dsm}} (\bar{g}_{s',n,t} - \ubar{g}_{s',n,t})}\Big)\Bigg) \quad \forall n \in N\label{eqn:bothCFE}
+    &x_n \cdot
+        \Bigg( \sum_{t\in T} \Big( d_{n,t} + \textcolor{darkred}{\sum_{\vartheta \in \Theta_n^{rec}}\delta_{\vartheta, t} - \sum_{\vartheta \in \Theta_n^{snd}}\delta_{\vartheta, t}} \nonumber \\
+        & \textcolor{darkred}{+ \sum_{{s'} \in S_n^{dsm}} (\bar{g}_{s',n,t} - \ubar{g}_{s',n,t})}\Big)\Bigg) \quad \forall n \in N\label{eqn:bothCFE}
 \end{align}
 
+Overall, the mathematical formulation of the 24/7 CFE matching problem extended with spatial and temporal load shifting (eqs. \ref{eqn:bothnb}-\ref{eqn:bothCFE}, illustrated in Figure \ref{fig:space-time-optimisation}) represents a situation where a company pursuing the 24/7 CFE matching target has two additional degrees of freedom in its decision-making process. Co-optimisation of space-time load-shifting flexibility with procurement and dispatch of catbon-free generators can lead to a more resource-efficient and cost-effective solution for carbon-free electricity matching.
+
+\subsection{Model scope and parametrisation {\color{red} TODO}}
+
+Data centers are interconnected with virtual links $\Theta_n^{snd}, \Theta_n^{rec}$ (complete graph).
+
+The model's time horizon spans one year, with a 1-hourly temporal resolution.
+All model runs are done with hourly resolution, i.e., no time sampling.
+
+The modelling is done for 2025. Input data such as technology cost assumptions, national renewable policies, decommissioning of legacy power plant fleet, and
+system-wide assumptions (e.g., price for EU ETS) are parametrised accordingly.
+
+highlight locational matching.
+
+In each scenario, we model the full European power system (ENTSO-E area) clustered to 37 zones. Eachzone represents an individual country. Some countries that straddle different synchronous areas are split to individual bidding zones, such as DK1 (West) and DK2 (East). We place data centers (i.e., electricity consumers committed to 24/7 CFE goals) in a selection of European countries: Ireland, Denmark, Germany, Finland, and Portugal. These countries have different weather patterns, renewable potentials, etc.
+
+Data centers have a nominal load of 100 MW (baseload profile).
+
+The data center operator aims to achieve a given 24/7 CFE matching score at all locations.
+
+Electricity system data is processed with an open-source model for the European energy system PyPSA-Eur \cite{PyPSAEur-docs}.
