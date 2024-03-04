@@ -42,6 +42,7 @@
 \usepackage{siunitx}                 % Provides consistent formatting for units and numbers
 \usepackage{csquotes} 				 % For handling inline and display quotations
 \usepackage[acronym, automake, nonumberlist]{glossaries-extra}
+\usepackage{svg}
 
 
 \usepackage{float}
@@ -72,6 +73,12 @@
 \newcommand{\B}{\mathbb{B} }
 \newcommand{\N}{\mathbb{N} }
 \newcommand{\co}{\ce{CO2}}
+
+\newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}} % creates command to adjust spacing between rows
+\newcommand{\hrefc}[2]{\href{#1}{\bf\color{blue}{\underline{#2}}}} % defines command for underlined, blue hyperlink
+\newcommand{\urlc}[1]{\hrefc{#1}{#1}} % defines command for URL hyperlink
+\newcommand{\ubar}[1]{\text{\b{$#1$}}} % defines a command for underlined text
+
 \def\el{${}_{\textrm{el}}$}
 \def\th{${}_{\textrm{th}}$}
 \def\deg{${}^\circ$}
@@ -85,6 +92,8 @@
 %  linewidth=0.5pt, % Width of the line around the box
 %  frametitlefont=\normalfont\bfseries, % Font for the box title
 %]{res}[thm]{Result}
+
+\definecolor{darkred}{RGB}{156, 0, 0}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -132,6 +141,7 @@
 \newacronym{cfd}{CfD}{Contract for Difference}
 \newacronym{go}{GO}{Guarantees of Origin}
 \newacronym{rec}{REC}{Renewable Energy Certificate}
+\newacronym{lcoe}{LCOE}{Levelised Cost of Electricity}
 
 % Other
 \newacronym{pypsa}{PyPSA}{Python for Power System Analysis}
@@ -147,7 +157,7 @@
 
 \begin{frontmatter}
 
-	\title{Draft: signals for effective load shaping strategies for clean computing}
+	\title{Spatio-temporal load shifting for truly clean computing}
 
 	\author[tubaddress]{Iegor Riepin\fnref{fn1}}
 	\ead{iegor.riepin@tu-berlin.de}
@@ -201,9 +211,7 @@
 
 \section*{Acknowledgements}
 
-[..]
-
-We thank the following people for fruitful discussions [..]
+We thank the following people for support and fruitful discussions on the art of energy system modelling: Elisabeth Zeyen, Fabian Hofmann, Fabian Neumann, Devon Swezey, Ana Radovanovic, Chris Adams, Kristina Riepin and the research staff of the Scalable Systems Laboratory at the University of Wisconsin-Madison.
 
 \section*{Author Contributions}
 
@@ -219,19 +227,24 @@ Software --
 Validation --
 Visualization --
 Writing - original draft
-
 \textbf{Tom Brown}:
 Conceptualization --
 Methodology --
+Formal Analysis --
 Software --
 Supervision --
 Writing - review \& editing
+\textbf{Victor M. Zavala}:
+Conceptualization --
+Methodology --
+Formal Analysis --
+Writing - review \& editing
+
 
 \section*{Data and Code Availability}
 \label{sec:code}
 
 The simulations were carried out with PyPSA --- an open-source software framework for simulating and optimising modern energy systems \cite{brownPyPSAPythonPower2018}.
-
 All code, input data and results are published under an open license. The code to reproduce the experiments is available at GitHub \cite{github-spacetime}.
 
 \printglossary[type=\acronymtype]
