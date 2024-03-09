@@ -29,7 +29,7 @@ The 24/7 CFE matching problem introduces a set of new model components (paramete
 \label{eqn:inflexnb}
 \end{equation}
 
-Note that if total electricity yield of renewable generators procured by the datacenter operator exceeds demand in a given hour, the excess electricity $ex_t$ has to be either stored or curtailed.\footnote{In practice, excess electricity can also be sold to the regional electricity market at wholesale market prices. This option is deliberately avoided in this work.}
+Note that if total electricity yield of renewable generators procured by the datacenter operator exceeds demand in a given hour, the excess electricity $ex_t$ has to be either stored or curtailed.\footnote{In practice, excess electricity can also be sold to the regional electricity market at wholesale market prices. This option is deliberately avoided in this work. When included, optimal usage of flexibility factors in potential revenues from selling excess electricity to the grid.}
 
 The 24/7 CFE matching constraint requires that sum over hourly generation from the contracted generators, plus net dispatch of the storage technologies, plus imports of electricity from the regional grid multiplied by the grid's hourly CFE factor $CFE_t$ minus the excess electricity must be higher or equal than a certain CFE score $x$ multiplied by the total load of a datacenter:
 \begin{equation}
@@ -136,22 +136,16 @@ Finally, the 24/7~CFE matching constraint defined in eq. \ref{eqn:CFE} can be de
 
 Overall, the mathematical formulation of the 24/7 CFE matching problem extended with spatial and temporal load shifting (eqs. \ref{eqn:bothnb}-\ref{eqn:bothCFE}, illustrated in Figure \ref{fig:space-time-optimisation}) represents a situation where a company pursuing the 24/7 CFE matching target has two additional degrees of freedom in its decision-making process. Co-optimisation of space-time load-shifting flexibility with procurement and dispatch of catbon-free generators can lead to a more resource-efficient and cost-effective solution for carbon-free electricity matching.
 
-\subsection{Model scope and parametrisation {\color{red} TODO}}
+\subsection{Model scope and parametrisation}
 
-Data centers are interconnected with virtual links $\Theta_n^{snd}, \Theta_n^{rec}$ (complete graph).
+Geographical focus of the model covers the entire European electricity system clustered to 37 zones. Each zone represents an individual country. Some countries that straddle different synchronous areas are split to individual bidding zones, such as DK1 (West) and DK2 (East). A set of datacenters---electricity consumers committed to 24/7 CFE goals---are placed in several selected zones in each scenario. Each zone have unique weather patterns, renewable potentials, and background electricity mixes. The model's time horizon spans one year. All model runs are done with 1-hourly temporal resolution, i.e., 8760 time steps.
 
-The model's time horizon spans one year, with a 1-hourly temporal resolution.
-All model runs are done with hourly resolution, i.e., no time sampling.
+We assume all datacenters to have a load of 100~MW and a flat (baseload) consumption profile. Note that the shape of a consumption profile does not significantly impact the costs of the 24/7 CFE matching \cite{riepin-zenodo-systemlevel247}. We assume a \textit{complete graph} structure of virtual links. Specifically, for every pair of distinct datacenters \(n, m \in N\) where \(n \neq m\), there exists a bidirectional virtual link \(\vartheta_{nm} \in \Theta\) such that \(snd(\vartheta_{nm}) = n\) and \(rec(\vartheta_{nm}) = m\), and conversely, \(snd(\vartheta_{mn}) = m\) and \(rec(\vartheta_{mn}) = n\). This configuration ensures that each datacenter is capable of both sending and receiving spatial load shifts to and from every other datacenter in the network.
 
-The modelling is done for 2025. Input data such as technology cost assumptions, national renewable policies, decommissioning of legacy power plant fleet, and
-system-wide assumptions (e.g., price for EU ETS) are parametrised accordingly.
+The model is parametrised for the exemplary year 2025. Input data such as technology cost assumptions, national renewable policies, decommissioning of legacy power plant fleet, and system-wide assumptions are parametrised accordingly. For the 24/7 CFE matching problem, we assume a set energy technologies that \textit{are commercially available today}: onshore wind, utility scale solar photovoltaics (\gls{PV}), and battery storage. Cost and other assumptions for these technologies are collected from the Danish Energy Agency \cite{DEA-technologydata} and provided in [Table S1].
 
-highlight locational matching.
+Weather-dependent power potentials for renewable energy technologies, including those of solar \gls{PV} and onshore wind generators available for the 24/7 CFE matching, are simulated with hourly temporal resolution using the ERA5 reanalysis dataset \cite{hersbachERA5GlobalReanalysis2020} using the open-source tool Atlite \cite{atlite-github}. We assume 2013 to be a representative climate year.
 
-In each scenario, we model the full European power system (ENTSO-E area) clustered to 37 zones. Eachzone represents an individual country. Some countries that straddle different synchronous areas are split to individual bidding zones, such as DK1 (West) and DK2 (East). We place data centers (i.e., electricity consumers committed to 24/7 CFE goals) in a selection of European countries: Ireland, Denmark, Germany, Finland, and Portugal. These countries have different weather patterns, renewable potentials, etc.
+Other electricity system data is processed with an open-source model for the European energy system PyPSA-Eur \cite{PyPSAEur-docs}. All code and input data to reproduce the experiments are available at the GitHub repository under open license \cite{github-spacetime}.
 
-Data centers have a nominal load of 100 MW (baseload profile).
 
-The data center operator aims to achieve a given 24/7 CFE matching score at all locations.
-
-Electricity system data is processed with an open-source model for the European energy system PyPSA-Eur \cite{PyPSAEur-docs}.

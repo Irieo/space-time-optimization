@@ -3,3 +3,36 @@
 % SPDX-License-Identifier: CC-BY-4.0
 
 %S1: Technology assumptions
+
+Cost and other assumptions for energy technologies available for 24/7 CFE participating consumers are collected from the Danish Energy Agency \cite{DEA-technologydata}. These assumptions are listed in \cref{tab:tech_costs}.
+A full list of technology assumptions, including the data for energy technologies in the background energy system, is available via the reproducible scientific workflow in the GitHub repository \cite{github-spacetime}.
+
+\begin{table*}[t]
+    \centering
+    \resizebox{0.95\textwidth}{!}{%
+        \begin{tabular}{lccccccc}
+            \hline\hline
+            \textbf{Technology} &
+            \textbf{Year} &
+            \textbf{\begin{tabular}[c]{@{}c@{}}CAPEX\\ (overnight cost)\end{tabular}} &
+            \textbf{\begin{tabular}[c]{@{}c@{}}FOM\\ {[}\%/year{]}\end{tabular}} &
+            \textbf{\begin{tabular}[c]{@{}c@{}}VOM\\ {[}Eur/MWh{]}\end{tabular}} &
+            \textbf{\begin{tabular}[c]{@{}c@{}}Efficiency\\ {[}per unit{]}\end{tabular}} &
+            \textbf{\begin{tabular}[c]{@{}c@{}}Lifetime\\ {[}years{]}\end{tabular}} &
+            \textbf{Source} \\ \hline\hline
+            Utility solar PV & 2025 & 612 \officialeuro/kW & 1.7 & 0.01 & - & 37.5 & \cite{DEA-technologydata} \\
+            Onshore wind & 2025 & 1077 \officialeuro/kW & 1.2 & 0.015 & - & 28.5 & \cite{DEA-technologydata} \\
+            Battery storage & 2025 & 187 \officialeuro/kWh & - & - & - & 22.5 & \cite{DEA-technologydata} \\
+            Battery inverter & 2025 & 215 \officialeuro/kW & 0.3 & - & 0.96 & 10 & \cite{DEA-technologydata} \\
+            \hline \hline
+        \end{tabular}%
+    }
+\begin{tablenotes}
+    {\footnotesize
+    \item[] Notes: All costs are in 2020 euros; CAPEX = capital expenditure; FOM = fixed operations and maintenance costs; VOM = variable operations and maintenance costs.
+    }
+\end{tablenotes}
+    \vspace{0.2cm}
+    \caption{Technology assumptions.}
+    \label{tab:tech_costs}
+\end{table*}

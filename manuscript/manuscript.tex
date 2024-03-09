@@ -42,8 +42,10 @@
 \usepackage{siunitx}                 % Provides consistent formatting for units and numbers
 \usepackage{csquotes} 				 % For handling inline and display quotations
 \usepackage[acronym, automake, nonumberlist]{glossaries-extra}
-\usepackage{svg}
-
+\usepackage{svg} 				    % Allows the inclusion of SVG files
+\usepackage{placeins} 			  	% Provides \FloatBarrier
+\usepackage{multicol}			    % Provides multicolumn environment
+\usepackage{stfloats}
 
 \usepackage{float}
 \usepackage{lipsum}
@@ -275,11 +277,8 @@ All code, input data and results are published under an open license. The code t
 
 \section{Technology assumptions}
 \label{sec:si_1}
-% \input{sections/supplementary_1.tex}
+\input{sections/supplementary_1.tex}
 
-\section{Background system assumptions}
-\label{sec:si_2}
-% \input{sections/supplementary_2.tex}
 
 % \addcontentsline{toc}{section}{Supplementary References}
 % \renewcommand{\ttdefault}{\sfdefault}
