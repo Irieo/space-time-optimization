@@ -2,4 +2,32 @@
 %
 % SPDX-License-Identifier: CC-BY-4.0
 
-\textbf{Our results in perspective --}
+\textbf{Our results in perspective --} This work contributes to and builds on two streams of literature: one is concerned with the flexibility and environmental impact of datacenters, the another with the means, costs and implications of 24/7 carbon-free energy matching.
+
+Regarding the first literature stream, our findings are in line with those of existing model-based studies on the flexibility potentials offered by geographically distributed datacenters: load-shifting flexibility facilitates the integration of renewable energy sources and reduces the carbon footprint of datacenters \cite{zhengMitigatingCurtailmentCarbon2020, mahmudDistributedFrameworkCarbon2016, wangGreenawareVirtualMachine2015, kimDataCentersDispatchable2017, liuGeographicalLoadBalancing2011, kellyBalancingPowerSystems2016, lindbergEnvironmentalPotentialHyperScale2021}.
+Although there is a growing literature on the opportunities and challenges of datacenter space-time flexibility use, it hasn't yet dealt with the case of companies committing to 24/7 CFE operations, such as running their facilities at 0 gCO2/KWh at all times.
+Since 24/7 CFE requires and implies renewable energy procurement through power purchase agreements and thus less electricity procurement from the grid, we argue that grid signals such as average carbon emission intensity or locational electricity prices have low value for informed use of load-shifting flexibility in the context of 24/7 CFE operation.
+In order to address this challenge, we identify three signals that can enable companies to shift load across space and time effectively.
+Moreover, we demonstrate how companies can achieve significant gains in energy efficiency and affordability of 24/7 CFE matching by including these signals into their energy procurement and load-shaping strategies.
+
+Regarding the second literature stream, our results indicate that space-time load-shifting increases access to clean electricity and provides flexibility to consumers for matching demand with carbon-free electricity.
+As a result, datacenters and other commercial and industrial consumers who have flexible demands can achieve high degrees of carbon-free energy matching with lower resources and thus be more cost-effective.
+The system decarbonization impact of 24/7 CFE procurement indicated by the model-based studies \cite{xu-247CFE-report,riepin-zenodo-systemlevel247} could therefore be amplified with greater participation.
+
+Finally, our results follow the general consensus on the benefits of geographical load balancing in highly renewable electricity networks \cite{schlachtbergerBenefitsCooperationHighly2017}.
+However, the benefits of connecting dispersed regions at continental scales are always weighed against the high costs and long lead times associated with grid expansion and reinforcement.
+It is unique to the datacenter industry that geographical load-shifting flexibility can be achieved at low costs and over long distances by harnessing local differences in the quality of renewable resources and renewable generation profiles.
+
+\textbf{Critical appraisal and further work --} The study design includes simplifications and assumptions inherent to energy optimization models. The results should thus be seen with caution, i.e., as model-derived insights rather than quantitative projections.
+
+Specifically, the model experiment is based on the assumption that datacenters achieve a certain degree of flexibility in their workloads.
+Since actual datacenter flexibility is not known with certainty and can vary among facilities significantly, the share of flexible workloads is controlled exogenously (see \nameref{sec:methods}).
+
+Additional empirical research is required to quantify the costs and benefits of utilizing demand flexibility in the \gls{ict} industry.
+Further studies could usefully explore the costs and technical potentials of achieving a certain share of flexible workloads, which are not considered in this study.
+By including implicit flexibility costs, the benefits of flexibility can be quantified more accurately.
+An empirical improvement could also address technical aspects and properties of flexible workloads, such as power usage ramping up and down, reliability, and performance constraints.
+
+In the context of 24/7 CFE matching, further research is needed to capture the interaction of promising energy technologies, such as long-term duration energy storage and space-time load-shifting flexibility.
+This case is particularly relevant, since 24/7 CFE procurement could create an early market and drive deployment of advanced technologies \cite{xu-247CFE-report,riepinMeansCostsSystemlevel2023}.
+It was also demonstrated that geographical load shifting complements long-term duration storage \cite{riepinValueSpacetimeLoadshifting2023}.
