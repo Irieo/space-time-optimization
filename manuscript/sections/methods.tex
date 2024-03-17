@@ -28,7 +28,6 @@ The 24/7 CFE matching problem introduces a set of new model components (paramete
     \end{split}
 \label{eqn:inflexnb}
 \end{equation}
-
 Note that if total electricity yield of renewable generators procured by the datacenter operator exceeds demand in a given hour, the excess electricity $ex_t$ has to be either stored or curtailed.\footnote{In practice, excess electricity can also be sold to the regional electricity market at wholesale market prices. This option is deliberately avoided in this work. When included, optimal usage of flexibility factors in potential revenues from selling excess electricity to the grid.}
 
 The 24/7 CFE matching constraint requires that sum over hourly generation from the contracted generators, plus net dispatch of the storage technologies, plus imports of electricity from the regional grid multiplied by the grid's hourly CFE factor $CFE_t$ minus the excess electricity must be higher or equal than a certain CFE score $x$ multiplied by the total load of a datacenter:
@@ -39,7 +38,6 @@ The 24/7 CFE matching constraint requires that sum over hourly generation from t
     \end{split}
 \label{eqn:CFE}
 \end{equation}
-
 % On CFE target
 \noindent where \textit{CFE score} $x$[\%] measures the degree to which hourly electricity consumption is matched with carbon-free electricity generation \cite{google-methodologies}. Thus, equation (\ref{eqn:CFE}) allows for controlling \textit{the quality score} of the 24/7~CFE procurement by adjusting the parameter $x$, which was the subject of research in recent literature \cite{riepinMeansCostsSystemlevel2023,xu-247CFE-report}. Here, we focus on the best quality score ($x=1$) ensuring that every kilowatt-hour of electricity consumption is met by carbon-free sources at all times.
 
@@ -125,7 +123,6 @@ Temporal load shifts have an additional constraint ensuring that the cluster-lev
 \end{equation}
 % 24/7 CFE matching with flexible load
 Finally, the 24/7~CFE matching constraint defined in eq. \ref{eqn:CFE} can be defined over a set of datacenters nodes $N$ and extended on the right-hand side with variables representing spatial and temporal load shifts:
-
 \begin{align}
     &\sum_{r\in CFE, t\in T} g_{r,n,t} + \sum_{s\in STO, t\in T} (\bar{g}_{s,n,t} - \ubar{g}_{s,n,t}) \nonumber \\
     &- \sum_{t\in T} ex_{n,t} + \sum_{t\in T} CFE_{n,t} \cdot im_{n,t} \geq \nonumber \\
@@ -133,7 +130,6 @@ Finally, the 24/7~CFE matching constraint defined in eq. \ref{eqn:CFE} can be de
         \Bigg( \sum_{t\in T} \Big( d_{n,t} + \textcolor{darkred}{\sum_{\vartheta \in \Theta_n^{rec}}\delta_{\vartheta, t} - \sum_{\vartheta \in \Theta_n^{snd}}\delta_{\vartheta, t}} \nonumber \\
         & \textcolor{darkred}{+ \sum_{{s'} \in S_n^{dsm}} (\bar{g}_{s',n,t} - \ubar{g}_{s',n,t})}\Big)\Bigg) \quad \forall n \in N\label{eqn:bothCFE}
 \end{align}
-
 Overall, the mathematical formulation of the 24/7 CFE matching problem extended with spatial and temporal load shifting (eqs. \ref{eqn:bothnb}-\ref{eqn:bothCFE}, illustrated in Figure \ref{fig:space-time-optimisation}) represents a situation where a company pursuing the 24/7 CFE matching target has two additional degrees of freedom in its decision-making process. Co-optimisation of space-time load-shifting flexibility with procurement and dispatch of catbon-free generators can lead to a more resource-efficient and cost-effective solution for carbon-free electricity matching.
 
 \subsection{Model scope and parametrisation}
