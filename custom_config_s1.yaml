@@ -1,0 +1,35 @@
+
+###################
+# Scenario controls
+
+run: paper-DKDEPT-test
+
+# modelled region
+zone: "DKDEPT" #37-node network of ENTSO-E area | possible toy zones: "IE", "DE", "IEDK", "DKDE"
+
+#wildcards
+scenario:
+  flexibility: ["0", "5", "10", "20", "30", "40"] #["0", "10", "20", "40"] # possible deviation of requested load from nominal level [percentage of nominal load]
+  distance: ['DKDEPT'] #['IEIE', 'IENI', 'IEGB', 'IENL', 'IEDK'] # datacenter pairs
+  policy:  ["cfe100"] # "ref", "res100", "cfe..", "cfe100"
+  palette: [
+             "p1", # onwind + solar + battery
+            # "p2", # onwind + solar + battery + LDES
+            # "p3", # onwind + solar + battery + Allam cycle turbine with CCS
+            ]
+  year: [
+          "2025",
+          #"2030"
+         ] # controls both the brownfield fleet and tech costs projection
+
+# CI consumer settings
+ci:
+  DKDEPT:
+    datacenters: {"DK1 0": "Denmark", "DE1 0": "Germany", "PT1 0": "Portugal"}
+  profile_shape: "baseload" #"baseload", "datacenter", "industry"
+  load: 100. # nominal load in MW
+  res_techs: ["onwind","solar"]
+  excess_share: 0.0
+  spatial_shifting: True #turns on/off spatial flexibiilty  (aka virtual links)
+  temporal_shifting: True #turns on/off temporal flexibiilty (aka DSM)
+  netshift_zero: False #turns on/off netshift zero constraint

@@ -1,0 +1,43 @@
+
+###################
+# Scenario controls
+
+run: paper-customdistances # name of the run
+
+# modelled region
+zone: "IEDK" #37-node network of ENTSO-E area | possible toy zones: "IE", "DE", "IEDK", "DKDE"
+
+#wildcards
+scenario:
+  flexibility: ["0", "10", "20", "30", "40"] # possible deviation of requested load from nominal level [percentage of nominal load]
+  distance: ["IEIE", "IENI", "IEGB", "IENL", "IEDK"] # list of datacenter locations
+  policy:  ["cfe100"] # "ref", "res100", "cfe..", "cfe100"
+  palette: [
+             "p1", # onwind + solar + battery
+            # "p2", # onwind + solar + battery + LDES
+            # "p3", # onwind + solar + battery + Allam cycle turbine with CCS
+            ]
+  year: [
+          "2025",
+          #"2030"
+         ] # controls both the brownfield fleet and tech costs projection
+
+# CI consumer settings
+ci:
+  IEIE:
+    datacenters: {"IE5 0": "Ireland"}
+  IENI:
+    datacenters: {"IE5 0": "Ireland", "GB5 0": "Northern Ireland"}
+  IEGB:
+    datacenters: {"IE5 0": "Ireland", "GB0 0": "Great Britain"}
+  IENL:
+    datacenters: {"IE5 0": "Ireland", "NL1 0": "Netherlands"}
+  IEDK:
+    datacenters: {"IE5 0": "Ireland", "DK1 0": "Denmark"}
+  profile_shape: "baseload" #"baseload", "datacenter", "industry"
+  load: 100. # nominal load in MW
+  res_techs: ["onwind","solar"]
+  excess_share: 0.0
+  spatial_shifting: True #turns on/off spatial flexibiilty  (aka virtual links)
+  temporal_shifting: True #turns on/off temporal flexibiilty (aka DSM)
+  netshift_zero: False #turns on/off netshift zero constraint

@@ -1,0 +1,35 @@
+
+###################
+# Scenario controls
+
+run: paper-DKGRPT # name of the run
+
+# modelled region
+zone: "DKGRPT" #37-node network of ENTSO-E area | possible toy zones: "IE", "DE", "IEDK", "DKDE"
+
+#wildcards
+scenario:
+  flexibility: ["0", "10", "20", "30", "40"] # possible deviation of requested load from nominal level [percentage of nominal load]
+  distance: ["DKGRPT"] # list of datacenter locations
+  policy:  ["cfe100"] # "ref", "res100", "cfe..", "cfe100"
+  palette: [
+             "p1", # onwind + solar + battery
+            # "p2", # onwind + solar + battery + LDES
+            # "p3", # onwind + solar + battery + Allam cycle turbine with CCS
+            ]
+  year: [
+          "2025",
+          #"2030"
+         ] # controls both the brownfield fleet and tech costs projection
+
+# CI consumer settings
+ci:
+  DKGRPT:
+    datacenters: {"DK1 0": "Denmark", "GR1 0": "Greece", "PT1 0": "Portugal"}
+  profile_shape: "baseload" #"baseload", "datacenter", "industry"
+  load: 100. # nominal load in MW
+  res_techs: ["onwind","solar"]
+  excess_share: 0.0
+  spatial_shifting: True #turns on/off spatial flexibiilty  (aka virtual links)
+  temporal_shifting: True #turns on/off temporal flexibiilty (aka DSM)
+  netshift_zero: False #turns on/off netshift zero constraint
