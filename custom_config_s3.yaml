@@ -2,10 +2,10 @@
 ###################
 # Scenario controls
 
-run: paper-DKGRPT # name of the run
+run: paper-DKGRPT
 
 # modelled region
-zone: "DKGRPT" #37-node network of ENTSO-E area | possible toy zones: "IE", "DE", "IEDK", "DKDE"
+zone: "DKGRPT" # control setting for geoscope() in scripts/solve_network.py
 
 #wildcards
 scenario:

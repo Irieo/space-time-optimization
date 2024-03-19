@@ -2,10 +2,10 @@
 ###################
 # Scenario controls
 
-run: paper-customdistances # name of the run
+run: paper-customdistances
 
 # modelled region
-zone: "IEDK" #37-node network of ENTSO-E area | possible toy zones: "IE", "DE", "IEDK", "DKDE"
+zone: "IEDK" # control setting for geoscope() in scripts/solve_network.py
 
 #wildcards
 scenario:
