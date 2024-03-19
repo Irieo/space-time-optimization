@@ -4,4 +4,63 @@ SPDX-FileCopyrightText: 2023 Iegor Riepin, Tom Brown
 SPDX-License-Identifier: CC0-1.0
 -->
 
-# Paper on space-time load shifting
+# Code for the paper "Spatio-temporal load shifting for truly clean computing"
+
+This repository contains the code to reproduce the complete workflow behind the manuscript.
+
+### Abstract
+
+Increasing energy demand for cloud computing raises concerns about its carbon footprint.  Companies within thedatacenter sector procure significant amounts of renewable energy to reduce their environmental impact.  There isincreasing interest in achieving 24/7 Carbon-Free Energy (CFE) matching in electricity usage, aiming to eliminate allcarbon footprints associated with electricity consumption.  However, the variability of renewable energy resourcesposes significant challenges for achieving this goal. In this work, we explore the role of spatio-temporal load-shiftingflexibility provided by hyperscale datacenters in achieving a net zero carbon footprint. We develop a computer model tosimulate a network of geographically distributed datacenters managed by a company pursuing 24/7 carbon-free energymatching. Through energy system modeling, we identify and isolate signals that companies can incorporate into load-shaping strategies to facilitate informed and effective load shifting.  We demonstrate how individual signals differ inweight depending on the location of the datacenter and the time of year. We show that optimal energy procurementand load-shifting decisions based on these signals can enhance the resource-efficiency and cost-effectiveness of cleancomputing.  The costs of 24/7 CFE matching are reduced by 1.29±0.07 EUR/MWh for every additional percentage offlexible load.
+
+### How to reproduce results from the paper?
+
+1. Clone the repository:
+
+```
+git clone git@github.com:Irieo/space-time-optimization.git
+```
+
+2. Install the necessary dependencies using `environment.yml` file. The following commands will do the job:
+
+```
+conda env create -f envs/environment.yaml
+conda activate 247-env
+```
+3. The results of the paper can be conveniently reproduced by running the [snakemake](https://snakemake.readthedocs.io/en/stable/) workflows.  The following terminal commands will run the workflows for sections 1-4 of the paper:
+
+```
+snakemake -call --configfile custom_config_s1.yaml
+snakemake -call --configfile custom_config_s2.yaml
+snakemake -call --configfile custom_config_s3.yaml
+snakemake -call --configfile custom_config_s4.yaml
+```
+
+NB Size of a mathematical problem for this paper is optimized so that it is possible to reproduce the results on a private laptop with 8GB RAM.
+
+Model results will be stored in the `results` directory. For each workflow, the directory will contain:
+- solved networks (.nc) for individual optimization problems
+- summary (.yaml) for individual optimization problems
+- summary (.csv) for aggregated results
+- log files (memory, python, solver)
+- detailed plots (.pdf) of the results
+
+4. At this point, a curious reader can even reproduce the dashboards from the paper by running the jupyter notebooks in the `scripts/` directory and compile the LaTeX project `/manuscript/manuscript.tex` to reproduce the paper .pdf file.
+
+### Data requirements
+
+The workflow is based on PyPSA networks exported from [PyPSA-Eur](https://github.com/PyPSA/pypsa-eur) built with `myopic` setting to get brownfield networks for 2025/2030. By default, the workflow uses already compiled networks located in the `input` folder.
+
+Technology data assumptions are automatically retrieved from [technology-data](https://github.com/PyPSA/technology-data) repository for `<year>` and `<version>`, as specified in `config.yaml`.
+
+Several plots from the paper require high-resolution geographical data that is not included in this repository.
+To reproduce those plots, download the following files from [PyPSA-Eur Zenodo repository](https://zenodo.org/records/7646728) and place the files in the `input/` directory: `elec_s_256_ec.nc`, `profile_solar.nc`, `regions_onshore_elec_s_256.geojson`
+
+
+### Software requirements
+
+The code is known to work with PyPSA 0.25.2, pandas 1.5.3, numpy 1.24.2, vresutils 0.3.1 and gurobi 10.0.1. The complete list of dependencies is in the [envs/environment.yml](envs/environment.yml) file.
+
+
+### License
+
+Different licenses apply to different parts of the repository. See [specifications here](.reuse/dep5).
