@@ -10,7 +10,7 @@ This repository contains the code to reproduce the complete workflow behind the 
 
 ### Abstract
 
-Increasing energy demand for cloud computing raises concerns about its carbon footprint.  Companies within thedatacenter sector procure significant amounts of renewable energy to reduce their environmental impact.  There isincreasing interest in achieving 24/7 Carbon-Free Energy (CFE) matching in electricity usage, aiming to eliminate allcarbon footprints associated with electricity consumption.  However, the variability of renewable energy resourcesposes significant challenges for achieving this goal. In this work, we explore the role of spatio-temporal load-shiftingflexibility provided by hyperscale datacenters in achieving a net zero carbon footprint. We develop a computer model tosimulate a network of geographically distributed datacenters managed by a company pursuing 24/7 carbon-free energymatching. Through energy system modeling, we identify and isolate signals that companies can incorporate into load-shaping strategies to facilitate informed and effective load shifting.  We demonstrate how individual signals differ inweight depending on the location of the datacenter and the time of year. We show that optimal energy procurementand load-shifting decisions based on these signals can enhance the resource-efficiency and cost-effectiveness of cleancomputing.  The costs of 24/7 CFE matching are reduced by 1.29±0.07 EUR/MWh for every additional percentage offlexible load.
+Increasing energy demand for cloud computing raises concerns about its carbon footprint.  Companies within the datacenter sector procure significant amounts of renewable energy to reduce their environmental impact.  There is increasing interest in achieving 24/7 Carbon-Free Energy (CFE) matching in electricity usage, aiming to eliminate all carbon footprints associated with electricity consumption.  However, the variability of renewable energy resources poses significant challenges for achieving this goal. In this work, we explore the role of spatio-temporal load-shifting flexibility provided by hyperscale datacenters in achieving a net zero carbon footprint. We develop a computer model to simulate a network of geographically distributed datacenters managed by a company pursuing 24/7 carbon-free energy matching. Through energy system modeling, we identify and isolate signals that companies can incorporate into load-shaping strategies to facilitate informed and effective load shifting.  We demonstrate how individual signals differ in weight depending on the location of the datacenter and the time of year. We show that optimal energy procurementand load-shifting decisions based on these signals can enhance the resource-efficiency and cost-effectiveness of clean computing.  The costs of 24/7 CFE matching are reduced by 1.29±0.07 EUR/MWh for every additional percentage offlexible load.
 
 ### How to reproduce results from the paper?
 
@@ -58,9 +58,9 @@ To reproduce those plots, download the following files from [PyPSA-Eur Zenodo re
 
 ### Software requirements
 
-The code is known to work with PyPSA 0.25.2, pandas 1.5.3, numpy 1.24.2, vresutils 0.3.1 and gurobi 10.0.1. The complete list of dependencies is in the [envs/environment.yml](envs/environment.yml) file.
+The code is known to work with PyPSA 0.26.0, pandas 2.0.3, numpy 1.26.2, vresutils 0.3.1 and gurobi 10.0.1. The complete list of dependencies is in the [envs/environment.yml](envs/environment.yml) file.
 
 
 ### License
 
-Different licenses apply to different parts of the repository. See [specifications here](.reuse/dep5).
+There are different open licenses for different types of files in the repository. See [specifications here](.reuse/dep5).
