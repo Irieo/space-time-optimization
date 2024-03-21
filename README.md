@@ -49,13 +49,16 @@ Model results will be stored in the `results` directory. For each workflow, the 
 
 ### Data requirements
 
-The workflow is based on PyPSA networks exported from [PyPSA-Eur](https://github.com/PyPSA/pypsa-eur) built with `myopic` setting to get brownfield networks for 2025/2030. By default, the workflow uses already compiled networks located in the `input` folder.
+The workflow is based on PyPSA networks exported from [PyPSA-Eur](https://github.com/PyPSA/pypsa-eur) built with `myopic` setting to get brownfield networks for 2025/2030. For convenience, the workflow uses already networks provided in the `input` folder by default.
 
 Technology data assumptions are automatically retrieved from [technology-data](https://github.com/PyPSA/technology-data) repository for `<year>` and `<version>`, as specified in `config.yaml`.
 
 Several plots from the paper require high-resolution geographical data that is not included in this repository.
-To reproduce those plots, download the following files from [PyPSA-Eur Zenodo repository](https://zenodo.org/records/7646728) and place the files in the `input/` directory: `elec_s_256_ec.nc`, `profile_solar.nc`, `regions_onshore_elec_s_256.geojson`
+To reproduce those plots, three files (`elec_s_256_ec.nc`, `profile_solar.nc`, `regions_onshore_elec_s_256.geojson`) from [PyPSA-Eur Zenodo repository](https://zenodo.org/records/7646728) have to be retrieved and placed in the `input/` directory. The following command automates this task:
 
+```
+snakemake -call retrieve_data
+```
 
 ### Software requirements
 

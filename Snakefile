@@ -168,39 +168,22 @@ if config.get("retrieve_cost_data", True):
             move(input[0], output[0])
 
 
-# additional rules for cluster communication -> not included into a workflow
-rule sync_solution:
+# retrieve additional data
+rule retrieve_data:
+    output:
+        elec="input/elec_s_256_ec.nc",
+        solar="input/profile_solar.nc",
+        regions="input/regions_onshore_elec_s_256.geojson",
     params:
-        cluster=f"iegor.riepin@gateway.hpc.tu-berlin.de:/scratch/iegor.riepin/247-cfe/results/{RUN}",
-    shell:
-        """
-        rsync -uvarh --no-g {params.cluster} results/
-        """
-
-
-rule sync_plots:
-    params:
-        cluster="iegor.riepin@gateway.hpc.tu-berlin.de:/scratch/iegor.riepin/247-cfe/results/report/plots/",
-    shell:
-        """
-        rsync -uvarh --no-g {params.cluster} report/plots
-        """
-
-
-rule zib_sync_solution:
-    params:
-        cluster=f"z1:/home/htc/iriepin/SCRATCH/space-time-optimization/results/{RUN}",
-    shell:
-        """
-        rsync -avz {params.cluster} results/
-        """
-
-
-rule zib_upload:
-    shell:
-        """
-        rsync -avz --exclude-from='.rsync-ignore' . z1:/home/htc/iriepin/SCRATCH/space-time-optimization/
-        """
+        base_url="https://zenodo.org/records/7646728/files/",
+    run:
+        files = {
+            "elec_s_256_ec.nc": output.elec,
+            "profile_solar.nc": output.solar,
+            "regions_onshore_elec_s_256.geojson": output.regions,
+        }
+        for file_name, target_path in files.items():
+            shell(f"curl -L {params.base_url}{file_name} -o {target_path}")
 
 
 # illustrate workflow

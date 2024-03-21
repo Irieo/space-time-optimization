@@ -24,6 +24,7 @@ dependencies:
   - geopandas
   - seaborn
   - oyaml
+  - snakemake-minimal>=7.7.0,<8.0.0
   - snakemake
   - ipykernel
   - gurobi
