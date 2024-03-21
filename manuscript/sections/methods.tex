@@ -7,7 +7,7 @@
 The simulations were carried out with the open-source software PyPSA for energy system modelling \cite{horschPyPSAEurOpenOptimisation2018} and Linopy for optimization \cite{LinopyLinearOptimization2024}.
 The mathematical model is a system-wide cost-minimisation problem.
 The objective of the model is to co-optimise (i) investment and dispatch decisions of generation and storage assets done by datacenters to meet their electricity demand in line with 24/7 CFE objectives, (ii) space-time load-shifting decisions subject to datacenter flexibility constraints, as well as (iii) investment and dispatch decisions of assets in the rest of the European electricity system to meet the demand of other consumers.
-The model formulation includes the the linear optimal power flow approximation on the transmission network.
+The model formulation includes the linear optimal power flow approximation on the transmission network.
 This work uses a brownfield investment approach, which means that the model includes information about the existing assets of the European electricity system.
 
 The electricity system dispatch and investment problem of this type is a standard in the energy modelling literature \cite{OpenModelsWikib}. The clean computing model is based on the framework of 24/7 CFE accounting suggested by Google \cite{google-methodologies} that was implemented in realms of energy system models by Xu et al. \cite{xu-247CFE-report} and Riepin \& Brown \cite{riepinMeansCostsSystemlevel2023}. The space-time load flexibility model is inspired by the work of Zhang et al. \cite{zhangRemuneratingSpaceTime2022}. Finally, the space-time load flexibility as a degree of freedom within the 24/7 CFE matching problem is a novel contribution of this work.
@@ -19,7 +19,14 @@ Datacenters are represented as a subset of demand nodes for electricity with a f
 
 % 24/7 CFE
 
-The 24/7 CFE matching problem introduces a set of new model components (parameters, variables, constraints) into the power system optimisation problem to represent voluntary yet binding carbon-free energy matching commitments. Here, we model a situation where one company operates a network of datacenters that are geographically distributed but managed collectively. The company is committed to match every kilowatt-hour of electricity consumption by carbon-free sources in all datacenter locations. To achieve the target, the company optimises its procurement of carbon-free generation and storage resources and operational decisions, such as dispatch of procured assets, load-shifting flexibility use, imports of electricity from the regional grid, and when necessary, curtailment of excess generation.
+The 24/7 CFE matching problem introduces a set of new model components (parameters, variables, constraints) into the power system optimisation problem to represent voluntary yet binding carbon-free energy matching commitments. Here, we model a situation where one company operates a network of datacenters that are geographically distributed but managed collectively. The company is committed \textit{to match every kilowatt-hour of electricity consumption by carbon-free sources in all datacenter locations}. To achieve the target, the company optimises its procurement of carbon-free generation and storage resources, dispatch of procured assets, imports of electricity from the regional grid, spatio-temporal load-shifting flexibility use (schematically illustrated in Figure \ref{fig:space-time-optimisation}), and when necessary, curtailment of excess generation.
+
+\begin{figure}[b]
+    \centering
+    \includegraphics[width=1\columnwidth]{img/datacenter-problem.png}
+    \caption{Illustration of spatio-temporal load-shifting optimisation problem faced by a datacenter operator.}
+    \label{fig:space-time-optimisation}
+\end{figure}
 
 \textbf{A single datacenter with an inflexible load --} First, consider a case of a single datacenter with demand profile $d_{t}$ for each hour $t$ of the year. The demand profile is assumed to be known in advance and is not flexible. In such case, energy balance constraint requires that hourly demand is met by a combination of the following: (i) dispatch $g_{r,t}$ of procured carbon-free generators $r\in CFE$, (ii) dispatch $\bar{g}_{s,t}$ of procured storage technologies $s\in STO$, and (iii) imports of electricity from the regional grid $im_{t}$:
 \begin{equation}
@@ -54,13 +61,6 @@ Note the following properties of the 24/7 CFE matching problem:
 \end{enumerate}
 
 \textbf{Multiple datacenters with flexible load --} Here we expand the 24/7 CFE matching problem to a case of multiple datacenters with flexible loads.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=1\columnwidth]{img/datacenter-problem.png}
-    \caption{Illustration of spatio-temporal load-shifting optimisation problem faced by a datacenter operator.}
-    \label{fig:space-time-optimisation}
-\end{figure}
 
 Let us assume that a known number of computing jobs with their associated power demand are \enquote{flexible}, i.e., power demand can potentially be shifted geographically across datacenter locations, or delayed to other times.\footnote{The amount of CPU usage on a cluster can be mapped accurately to electricity demand \cite{radovanovicIEEE2023}.} Thus, the \textit{dispatched load} $\widetilde{d}_t$ of a datacenter can deviate from the requested load $d_t$. The dispatched load $\widetilde{d}_t$ can take a value in a feasible domain that is constrained by a datacenter capacity (an upper limit) and the inflexible workloads volume (a lower limit), as illustrated in Figure \ref{fig:workloads}. The range of possible deviations between the dispatched and the requested loads is assumed to lie within a certain \textit{flexibility range} $f$~[\%], such as:
 \begin{subequations}
@@ -130,15 +130,15 @@ Finally, the 24/7~CFE matching constraint defined in eq. \ref{eqn:CFE} can be de
         \Bigg( \sum_{t\in T} \Big( d_{n,t} + \textcolor{darkred}{\sum_{\vartheta \in \Theta_n^{rec}}\delta_{\vartheta, t} - \sum_{\vartheta \in \Theta_n^{snd}}\delta_{\vartheta, t}} \nonumber \\
         & \textcolor{darkred}{+ \sum_{{s'} \in S_n^{dsm}} (\bar{g}_{s',n,t} - \ubar{g}_{s',n,t})}\Big)\Bigg) \quad \forall n \in N\label{eqn:bothCFE}
 \end{align}
-Overall, the mathematical formulation of the 24/7 CFE matching problem extended with spatial and temporal load shifting (eqs. \ref{eqn:bothnb}-\ref{eqn:bothCFE}, illustrated in Figure \ref{fig:space-time-optimisation}) represents a situation where a company pursuing the 24/7 CFE matching target has two additional degrees of freedom in its decision-making process. Co-optimisation of space-time load-shifting flexibility with procurement and dispatch of catbon-free generators can lead to a more resource-efficient and cost-effective solution for carbon-free electricity matching.
+Overall, the mathematical formulation of the 24/7 CFE matching problem extended with eqs. \ref{eqn:bothnb}-\ref{eqn:bothCFE} represents a situation where a company pursuing the 24/7 CFE matching target has two additional degrees of freedom---the ability to shift power loads in space and in time---as part of its decision-making process. Co-optimisation of space-time load-shifting flexibility with procurement and dispatch of carbon-free generators can lead to a more resource-efficient and cost-effective solution for carbon-free electricity matching.
 
 \subsection{Model scope and parametrisation}
 
 Geographical focus of the model covers the entire European electricity system clustered to 37 zones. Each zone represents an individual country. Some countries that straddle different synchronous areas are split to individual bidding zones, such as DK1 (West) and DK2 (East). A set of datacenters---electricity consumers committed to 24/7 CFE goals---are placed in several selected zones in each scenario. Each zone have unique weather patterns, renewable potentials, and background electricity mixes. The model's time horizon spans one year. All model runs are done with 1-hourly temporal resolution, i.e., 8760 time steps.
 
-We assume all datacenters to have a load of 100~MW and a flat (baseload) consumption profile. Note that the shape of a consumption profile does not significantly impact the costs of the 24/7 CFE matching \cite{riepin-zenodo-systemlevel247}. We assume a \textit{complete graph} structure of virtual links. Specifically, for every pair of distinct datacenters \(n, m \in N\) where \(n \neq m\), there exists a bidirectional virtual link \(\vartheta_{nm} \in \Theta\) such that \(snd(\vartheta_{nm}) = n\) and \(rec(\vartheta_{nm}) = m\), and conversely, \(snd(\vartheta_{mn}) = m\) and \(rec(\vartheta_{mn}) = n\). This configuration ensures that each datacenter is capable of both sending and receiving spatial load shifts to and from every other datacenter in the network.
+We assume all datacenters to have a load of 100~MW and a flat (baseload) consumption profile. Note that the shape of a consumption profile does not significantly impact the costs of the 24/7 CFE matching \cite{riepin-zenodo-systemlevel247}. We assume a \textit{complete graph} superstructure of virtual links. Specifically, for every pair of distinct datacenters \(n, m \in N\) where \(n \neq m\), there exists a bidirectional virtual link \(\vartheta_{nm} \in \Theta\) such that \(snd(\vartheta_{nm}) = n\) and \(rec(\vartheta_{nm}) = m\), and conversely, \(snd(\vartheta_{mn}) = m\) and \(rec(\vartheta_{mn}) = n\). This configuration ensures that each datacenter is capable of both sending and receiving spatial load shifts to and from every other datacenter in the network.
 
-The model is parametrised for the exemplary year 2025. Input data such as technology cost assumptions, national renewable policies, decommissioning of legacy power plant fleet, and system-wide assumptions are parametrised accordingly. For the 24/7 CFE matching problem, we assume a set energy technologies that \textit{are commercially available today}: onshore wind, utility scale solar photovoltaics (\gls{PV}), and battery storage. Cost and other assumptions for these technologies are collected from the Danish Energy Agency \cite{DEA-technologydata} and provided in \nameref{sec:si}.
+The model is parametrised for the exemplary year 2025. Input data such as technology cost assumptions, national renewable policies, decommissioning of legacy power plant fleet, and system-wide assumptions are parametrised accordingly. For the 24/7 CFE matching problem, we assume a set of energy technologies that \textit{are commercially available today}: onshore wind, utility scale solar photovoltaics (\gls{PV}), and battery storage. Cost and other assumptions for these technologies are collected from the Danish Energy Agency \cite{DEA-technologydata} and provided in \nameref{sec:si}.
 
 Weather-dependent power potentials for renewable energy technologies, including those of solar PV and onshore wind generators available for the 24/7 CFE matching, are simulated with hourly temporal resolution using the ERA5 reanalysis dataset \cite{hersbachERA5GlobalReanalysis2020} using the open-source tool Atlite \cite{atlite-github}. We assume 2013 to be a representative climate year.
 

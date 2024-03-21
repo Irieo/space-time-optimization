@@ -2,7 +2,7 @@
 %
 % SPDX-License-Identifier: CC-BY-4.0
 
-We present the results in steps, since there are several interacting signals at work. In the first three subsections, we isolate three particular signals that affect the load-shifting. In the final section, we generalize the results across any combination of datacenters.
+We present the results as a sequence of case studies of varying levels of complexity, since there are several interacting signals at work. In the first three subsections, we isolate three particular signals that affect the load-shifting. In the final section, we generalize the results across any combination of datacenters.
 
 \subsection{Signal 1: quality of local renewable resources}
 
@@ -33,7 +33,7 @@ Second, temporal load shifts (panels i, k, m) is used to \enquote{flatten} the r
         \textbf{d:} Cost-optimal portfolio of renewable resources and battery storage sufficient for 24/7 matching. Steps on x-axis represent increasing share of flexible load.
         \textbf{e:} Cost breakdown of 24/7 matching strategy.
         \textbf{f:} Total annual costs of 24/7 matching strategy as a function load flexibility. Relative axis is normalized to the costs of inflexible load.
-        \textbf{h,j,l:} Hourly spatial load shifts for the three datacenter locations. Color mapping represents the quantity of load \enquote{received} from other locations or \enquote{sent} away.
+        \textbf{h,j,l:} Hourly spatial load shifts for the three datacenter locations. Color mapping represents the quantity of load \enquote{received} from other locations (positive values) or \enquote{sent} away (negative values).
         \textbf{i,k,m:} Hourly temporal load shifts for the three datacenter locations. Color mapping represents the quantity of load shifted to a given hour from other times, or shifted from a given hour to another time.}
     \label{fig:dashboard1}
 \end{figure*}
@@ -56,8 +56,8 @@ Figure \ref{fig:dashboard1}: panel e illustrates the relationship between the di
     \caption{Illustration of the signal 2: low correlation of wind power generation over long distances.
     \textbf{a:} Assumed datacenter locations: pairwise connections across regions with similar quality of renewable resources. Here: Ireland with Northern Ireland, or England, or the Netherlands, or Denmark (-west zone).
     \textbf{b,c:} Peason correlation of hourly capacity factor for onshore wind generation, if Denmark (-west zone, panel b) or selected region of Ireland (panel c) are taken as basis. As a result of different weather conditions, wind feed-in has a noticeable correlation falloff over distances of 300-400 km. Data is simulated using the ERA5 reanalysis dataset for weather year 2013 and aggregated to 256 regions in Europe.
-    \textbf{d} Hourly spatial load shifts for the selected scenario and datacenter; here datacenter is located Denmark (and another one is located Ireland). Color mapping represents the quantity of load \enquote{received} from other locations or \enquote{sent} away.
-    \textbf{e} Cost savings of 24/7 matching with increasing distance between datacenters. Costs are normalized to the cost level of inflexible load.}
+    \textbf{d:} Hourly spatial load shifts for the selected scenario and datacenter; here datacenter is located Denmark (and another one is located Ireland). Color mapping represents the quantity of load \enquote{received} from other locations (positive values) or \enquote{sent} away (negative values).
+    \textbf{e:} Cost savings of 24/7 matching with increasing distance between datacenters. Costs are normalized to the cost level of inflexible load.}
     \label{fig:dashboard2}
 \end{figure*}
 
@@ -83,7 +83,7 @@ Finally, Figure \ref{fig:dashboard3}: panels i and j show optimal hourly load sh
     \textbf{f:} Cost-optimal portfolio of renewable resources and battery storage sufficient for 24/7 matching. Steps on x-axis represent increasing share of flexible load.
     \textbf{g:} Cost breakdown of 24/7 matching strategy.
     \textbf{h:} Total annual costs of 24/7 matching strategy as a function load flexibility. Relative axis is normalized to the costs of inflexible load.
-    \textbf{i,j} Hourly spatial load shifts for the selected datacenter locations: Greece (panel i) and Portugal (panel j). Color mapping represents the quantity of load \enquote{received} from other locations or \enquote{sent} away.}
+    \textbf{i,j:} Hourly spatial load shifts for the selected datacenter locations: Greece (panel i) and Portugal (panel j). Color mapping represents the quantity of load \enquote{received} from other locations (positive values) or \enquote{sent} away (negative values).}
     \label{fig:dashboard3}
 \end{figure*}
 
