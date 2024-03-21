@@ -62,7 +62,7 @@ snakemake -call retrieve_data
 
 ### Software requirements
 
-The code is known to work with PyPSA 0.26.0, pandas 2.0.3, numpy 1.26.2, vresutils 0.3.1 and gurobi 10.0.1. The complete list of dependencies is in the [envs/environment.yml](envs/environment.yml) file.
+The code is known to work with PyPSA 0.26.0, pandas 2.0.3, numpy 1.26.2, and gurobi 10.0.1. The complete list of dependencies is in the [envs/environment.yaml](envs/environment.yaml) file.
 
 
 ### License
