@@ -28,7 +28,7 @@ The 24/7 CFE matching problem introduces a set of new model components (paramete
     \label{fig:space-time-optimisation}
 \end{figure}
 
-\textbf{A single datacenter with an inflexible load --} First, consider a case of a single datacenter with demand profile $d_{t}$ for each hour $t$ of the year. The demand profile is assumed to be known in advance and is not flexible. In such case, energy balance constraint requires that hourly demand is met by a combination of the following: (i) dispatch $g_{r,t}$ of procured carbon-free generators $r\in CFE$, (ii) dispatch $\bar{g}_{s,t}$ of procured storage technologies $s\in STO$, and (iii) imports of electricity from the regional grid $im_{t}$:
+\textbf{A single datacenter with an inflexible load --} First, consider a case of a single datacenter with demand profile $d_{t}$ for each hour $t$ of the year. The demand profile is assumed to be known in advance and is not flexible. In such case, energy balance constraint requires that hourly demand is met by a combination of the following: (i) dispatch $g_{r,t}$ of procured carbon-free generators $r\in CFE$, (ii) discharge $\bar{g}_{s,t}$ and charge $\underline{g}_{s,t}$ of procured storage technologies $s\in STO$, and (iii) imports of electricity from the regional grid $im_{t}$:
 \begin{equation}
     \begin{split}
         \sum_{r\in CFE} g_{r,t} &+ \sum_{s\in STO} \left(\bar{g}_{s,t} - \underline{g}_{s,t}\right) - ex_t + im_t = d_t \quad \forall t \in T
