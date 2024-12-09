@@ -6,12 +6,20 @@ SPDX-License-Identifier: CC0-1.0
 
 # Code for the paper "Spatio-temporal load shifting for truly clean computing"
 
-This repository contains the code to reproduce the complete workflow behind the manuscript.
+This repository contains the code to reproduce the complete workflow behind the manuscript: "Spatio-temporal load shifting for truly clean computing" by Iegor Riepin, Victor Zavala and Tom Brown. The paper is available on [arXiv](https://arxiv.org/abs/2405.00036).
 
 ### Abstract
 
-Companies with datacenters are procuring significant amounts of renewable energy to reduce their carbon footprint. There is increasing interest in achieving 24/7 Carbon-Free Energy (CFE) matching in electricity usage, aiming to eliminate all carbon footprints associated with electricity consumption on an hourly basis. However, the variability of renewable energy resources poses significant challenges for achieving this goal. We explore the impact of shifting computing jobs and associated power loads both in time and between datacenter locations. We develop an optimization model to simulate a network of geographically distributed datacenters managed by a company leveraging spatio-temporal load flexibility to achieve 24/7 CFE matching. We isolate three signals relevant for informed use of load flexiblity: varying average quality of renewable energy resources, low correlation between wind power generation over long distances due to different weather conditions, and lags in solar radiation peak due to Earth’s rotation. We illustrate that the location of datacenters and the time of year affect which signal drives an effective load-shaping strategy. The energy procurement and load-shifting decisions based on informed use of these signals facilitate the
-resource-efficiency and cost-effectiveness of clean computing—the costs of 24/7 CFE are reduced by 1.29±0.07 EUR/MWh for every additional percentage of flexible load. We provide practical guidelines on how companies with datacenters can leverage spatio-temporal load flexibility for truly clean computing. Our results and the open-source optimization model can also be useful for a broader variety of companies with flexible loads and an interest in eliminating their carbon footprint.
+Companies operating datacenters are increasingly committed to procuring renewable energy to reduce their carbon footprint, with a growing emphasis on achieving 24/7 Carbon-Free Energy (CFE) matching—eliminating carbon emissions from electricity use on an hourly basis.
+However, variability in renewable energy resources poses significant challenges to achieving this goal.
+This study investigates how shifting computing workloads and associated power loads across time and location supports 24/7 CFE matching.
+We develop an optimization model to simulate a network of geographically distributed datacenters managed by a company leveraging spatio-temporal load flexibility to achieve 24/7 CFE matching.
+We isolate three signals relevant for informed use of load flexibility: (1) varying average quality of renewable energy resources, (2) low correlation between wind power generation over long distances due to different weather conditions, and (3) lags in solar radiation peak due to Earth's rotation.
+Our analysis reveals that datacenter location and time of year influence which signal drives an effective load-shaping strategy.
+By leveraging these signals for coordinated energy procurement and load-shifting decisions, clean computing becomes both more resource-efficient and cost-effective—the costs of 24/7 CFE are reduced by 1.29±0.07 EUR/MWh for every additional percentage of flexible load.
+This study provides practical guidelines for datacenter companies to harness spatio-temporal load flexibility for clean computing.
+Our results and the open-source optimization model offer insights applicable to a broader range of industries aiming to eliminate their carbon footprints.
+
 
 ### How to reproduce results from the paper?
 
