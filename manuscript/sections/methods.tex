@@ -7,8 +7,7 @@
 The simulations were carried out with the open-source software PyPSA for energy system modelling \cite{horschPyPSAEurOpenOptimisation2018} and Linopy for optimization \cite{LinopyLinearOptimization2024}.
 The mathematical model is a system-wide cost-minimisation problem.
 The objective of the model is to co-optimise (i) investment and dispatch decisions of generation and storage assets done by datacenters to meet their electricity demand in line with 24/7 CFE objectives, (ii) space-time load-shifting decisions subject to datacenter flexibility constraints, as well as (iii) investment and dispatch decisions of assets in the rest of the European electricity system to meet the demand of other consumers.
-The model formulation includes the linear optimal power flow approximation on the transmission network.
-This work uses a brownfield investment approach, which means that the model includes information about the existing assets of the European electricity system.
+The model formulation includes the linear optimal power flow approximation for the transmission network based on the cycle-based formulation of Kirchhoff's Voltage Law \cite{horschLinearOptimalPower2018}. This work uses a brownfield investment approach, which means that the model includes information about the existing assets of the European electricity system.
 
 The electricity system dispatch and investment problem of this type is a standard in the energy modelling literature \cite{OpenModelsWikib}. The clean computing model is based on the framework of 24/7 CFE accounting suggested by Google \cite{google-methodologies} that was implemented in realms of energy system models by Xu et al. \cite{xu-247CFE-report} and Riepin \& Brown \cite{riepinMeansCostsSystemlevel2023}. The space-time load flexibility model is inspired by the work of Zhang et al. \cite{zhangRemuneratingSpaceTime2022}. Finally, the space-time load flexibility as a degree of freedom within the 24/7 CFE matching problem is a novel contribution of this work.
 
@@ -28,7 +27,7 @@ The 24/7 CFE matching problem introduces a set of new model components (paramete
     \label{fig:space-time-optimisation}
 \end{figure}
 
-\textbf{A single datacenter with an inflexible load --} First, consider a case of a single datacenter with demand profile $d_{t}$ for each hour $t$ of the year. The demand profile is assumed to be known in advance and is not flexible. In such case, energy balance constraint requires that hourly demand is met by a combination of the following: (i) dispatch $g_{r,t}$ of procured carbon-free generators $r\in CFE$, (ii) dispatch $\bar{g}_{s,t}$ of procured storage technologies $s\in STO$, and (iii) imports of electricity from the regional grid $im_{t}$:
+\textbf{A single datacenter with an inflexible load --} First, consider a case of a single datacenter with demand profile $d_{t}$ for each hour $t$ of the year. The demand profile is assumed to be known in advance and is not flexible. In such case, energy balance constraint requires that hourly demand is met by a combination of the following: (i) dispatch $g_{r,t}$ of procured carbon-free generators $r\in CFE$, (ii) discharge $\bar{g}_{s,t}$ and charge $\underline{g}_{s,t}$ of procured storage technologies $s\in STO$, and (iii) imports of electricity from the regional grid $im_{t}$:
 \begin{equation}
     \begin{split}
         \sum_{r\in CFE} g_{r,t} &+ \sum_{s\in STO} \left(\bar{g}_{s,t} - \underline{g}_{s,t}\right) - ex_t + im_t = d_t \quad \forall t \in T
