@@ -1,0 +1,173 @@
+% SPDX-FileCopyrightText: 2024 Iegor Riepin, Tom Brown
+%
+% SPDX-License-Identifier: CC-BY-4.0
+
+
+\documentclass[11pt, 1p, nopreprintline]{elsarticle}
+
+\journal{TBA}
+
+\bibliographystyle{elsarticle-num}
+\biboptions{numbers,sort&compress}
+
+% format hacks
+\usepackage{libertine}
+\usepackage{libertinust1math}
+\usepackage{amsmath}                 % Provides advanced math typesetting and environments
+\usepackage{bbold}                   % Provides blackboard bold font for numbers
+\usepackage{graphicx}                % Handles the inclusion of graphics files
+\usepackage{eurosym}                 % Provides the Euro currency symbol
+\usepackage{mathtools}               % Enhances amsmath package, adding new symbols and tools
+\usepackage{url}                     % Handles the formatting of URLs
+\usepackage{booktabs}                % Improves the quality of tables in LaTeX
+\usepackage{epstopdf}                % Automatically converts EPS files to PDF
+\usepackage{xfrac}                   % Provides a consistent way to typeset fractions
+\usepackage{tabularx}                % Enhances the standard LaTeX tables
+\usepackage{bm}                      % Provides access to bold math symbols
+\usepackage{subcaption}              % Provides support for subfigures and subtables
+\usepackage{longtable}               % Allows the creation of multi-page tables
+\usepackage{multirow}                % Enables cells spanning multiple rows in tables
+\usepackage{threeparttable}          % Provides additional functionality for tables
+\usepackage{pdflscape}               % Allows landscape pages in PDF output
+\usepackage[svgnames]{xcolor}    	 % Load xcolor packages
+\usepackage[export]{adjustbox}       % Provides tools for resizing and trimming images
+\usepackage[version=4]{mhchem}       % Provides typesetting for chemical equations
+\usepackage{xurl} 				     % Allows line breaks in URLs
+\usepackage[colorlinks]{hyperref}    % Creates hyperlinks in the document
+\usepackage[parfill]{parskip}        % Adjusts paragraph spacing
+\usepackage[nameinlink,sort&compress,capitalise,noabbrev]{cleveref} % Enhanced cross-referencing
+\usepackage[leftcaption,raggedright]{sidecap} % Provides side captions for figures and tables
+\usepackage[prependcaption,textsize=footnotesize]{todonotes} % Allows inline and margin notes
+\usepackage{siunitx}                 % Provides consistent formatting for units and numbers
+\usepackage{csquotes} 				 % For handling inline and display quotations
+\usepackage{svg} 				    % Allows the inclusion of SVG files
+\usepackage{placeins} 			  	% Provides \FloatBarrier
+\usepackage{multicol}			    % Provides multicolumn environment
+\usepackage{stfloats}
+
+\usepackage{float}
+\usepackage{lipsum}
+\usepackage{mdframed}
+\usepackage[resetlabels,labeled]{multibib} % Allows multiple bibliographies with own styles/numbering
+\newcites{S}{Supplementary References}
+\bibliographystyleS{elsarticle-num}
+
+\sisetup{
+	range-units = single,
+	per-mode = symbol
+}
+\DeclareSIUnit\year{a}
+\DeclareSIUnit{\tco}{t_{\ce{CO2}}}
+\DeclareSIUnit{\sieuro}{\mbox{\euro}}
+
+\setlength{\abovecaptionskip}{1pt} 	% Adjust the space above the caption
+\graphicspath{ 						% Allows for multiple directories
+	{../results/paper-wp1},
+	}
+
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\set}[1]{\left\{#1\right\} }
+\DeclareMathOperator*{\argmin}{\arg\!\min}
+\newcommand{\R}{\mathbb{R} }
+\newcommand{\B}{\mathbb{B} }
+\newcommand{\N}{\mathbb{N} }
+\newcommand{\co}{\ce{CO2}}
+
+\newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}} % creates command to adjust spacing between rows
+\newcommand{\hrefc}[2]{\href{#1}{\bf\color{blue}{\underline{#2}}}} % defines command for underlined, blue hyperlink
+\newcommand{\urlc}[1]{\hrefc{#1}{#1}} % defines command for URL hyperlink
+\newcommand{\ubar}[1]{\text{\b{$#1$}}} % defines a command for underlined text
+
+\def\el{${}_{\textrm{el}}$}
+\def\th{${}_{\textrm{th}}$}
+\def\deg{${}^\circ$}
+
+\newdefinition{rmk}{Remark}
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{res}[thm]{Result}  % Result w/o box env
+%\newmdtheoremenv[
+%  backgroundcolor=Wheat, % Background color
+%  linewidth=0.5pt, % Width of the line around the box
+%  frametitlefont=\normalfont\bfseries, % Font for the box title
+%]{res}[thm]{Result}
+
+\definecolor{darkred}{RGB}{156, 0, 0}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\begin{frontmatter}
+
+	\title{Spatio-temporal load shifting for truly clean computing}
+
+	\author[tubaddress]{Iegor Riepin\fnref{fn1}}
+	\ead{iegor.riepin@tu-berlin.de}
+	\author[tubaddress]{Tom Brown}
+	\ead{t.brown@tu-berlin.de}
+	\author[wiaddress]{Victor M. Zavala}
+	\ead{victor.zavala@wisc.edu}
+
+	\address[tubaddress]{Department of Digital Transformation in Energy Systems, TU Berlin, Germany}
+	% \address[wiaddress]{Department of Chemical and Biological Engineering, University of Wisconsin-Madison, USA}
+	\address[wiaddress]{%
+  		\begin{tabular}[t]{@{}l@{}}
+			Department of Chemical and Biological Engineering, University of Wisconsin-Madison, USA
+		\end{tabular}%
+		}
+    \fntext[fn1]{Corresponding author: Iegor Riepin, TU Berlin, Einsteinufer 25, 10587 Berlin, Germany}
+
+\end{frontmatter}
+
+% supplementary information
+
+\section*{Supplementary Information}
+\label{sec:si}
+
+\section{Technology assumptions}
+\label{sec:si_1}
+
+
+%S1: Technology assumptions
+
+Cost and other assumptions for energy technologies available for 24/7 CFE participating consumers are collected from the Danish Energy Agency \cite{DEA-technologydata}. These assumptions are listed in \cref{tab:tech_costs}.
+A full list of technology assumptions, including the data for energy technologies in the background energy system, is available via the reproducible scientific workflow in the GitHub repository \cite{github-spacetime}.
+
+\begin{table}[H]
+    \centering
+    \resizebox{0.95\textwidth}{!}{%
+        \begin{tabular}{lccccccc}
+            \hline\hline
+            \textbf{Technology} &
+            \textbf{Year} &
+            \textbf{\begin{tabular}[c]{@{}c@{}}CAPEX\\ (overnight cost)\end{tabular}} &
+            \textbf{\begin{tabular}[c]{@{}c@{}}FOM\\ {[}\%/year{]}\end{tabular}} &
+            \textbf{\begin{tabular}[c]{@{}c@{}}VOM\\ {[}Eur/MWh{]}\end{tabular}} &
+            \textbf{\begin{tabular}[c]{@{}c@{}}Efficiency\\ {[}per unit{]}\end{tabular}} &
+            \textbf{\begin{tabular}[c]{@{}c@{}}Lifetime\\ {[}years{]}\end{tabular}} &
+            \textbf{Source} \\ \hline\hline
+            Utility solar PV & 2025 & 612 \officialeuro/kW & 1.7 & 0.01 & - & 37.5 & \cite{DEA-technologydata} \\
+            Onshore wind & 2025 & 1077 \officialeuro/kW & 1.2 & 0.015 & - & 28.5 & \cite{DEA-technologydata} \\
+            Battery storage & 2025 & 187 \officialeuro/kWh & - & - & - & 22.5 & \cite{DEA-technologydata} \\
+            Battery inverter & 2025 & 215 \officialeuro/kW & 0.3 & - & 0.96 & 10 & \cite{DEA-technologydata} \\
+            \hline \hline
+        \end{tabular}%
+    }
+\begin{tablenotes}
+    {\footnotesize
+    \item[] Notes: All costs are in 2020 euros; CAPEX = capital expenditure; FOM = fixed operations and maintenance costs; VOM = variable operations and maintenance costs.
+    }
+\end{tablenotes}
+    \vspace{0.2cm}
+    \caption{Technology assumptions.}
+    \label{tab:tech_costs}
+\end{table}
+
+% \addcontentsline{toc}{section}{Supplementary References}
+% \renewcommand{\ttdefault}{\sfdefault}
+\bibliography{bibliography}
+
+\end{document}
