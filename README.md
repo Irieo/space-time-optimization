@@ -1,12 +1,15 @@
 <!--
-SPDX-FileCopyrightText: 2023 Iegor Riepin, Tom Brown
+SPDX-FileCopyrightText: 2024 Iegor Riepin, Tom Brown
 
 SPDX-License-Identifier: CC0-1.0
 -->
 
 # Code for the paper "Spatio-temporal load shifting for truly clean computing"
 
-This repository contains the code to reproduce the complete workflow behind the manuscript: "Spatio-temporal load shifting for truly clean computing" by Iegor Riepin, Victor Zavala and Tom Brown. The paper is available on [arXiv](https://arxiv.org/abs/2405.00036).
+This repository contains the code to reproduce the complete workflow behind the manuscript: "Spatio-temporal load shifting for truly clean computing" by Iegor Riepin, Victor Zavala and Tom Brown.
+
+The paper is now published in the journal [Advances in Applied Energy](https://iriepin.com/publication/p_2024_spacetime/) under open access.
+
 
 ### Abstract
 
